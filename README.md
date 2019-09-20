@@ -1,6 +1,6 @@
 ## LipSync Macro
 
-The "LipSync" is an assistive technology device which is being developed to allow quadriplegics and other people with limited hand use the ability to use touchscreen mobile devices by manipulation of a mouth-operated joystick with integrated sip and puff controls. We are releasing all of our work open-source, to make the Lipsync a solution that can be made at the community level for less than $300.
+The LipSync is an assistive technology device which is being developed to allow quadriplegics and other people with limited hand use the ability to use touchscreen mobile devices by manipulation of a mouth-operated joystick with integrated sip and puff controls. We are releasing all of our work open-source, to make the Lipsync a solution that can be made at the community level for less than $300.
 
 This GitHub repository will serve as a database for all software files associated with the LipSync Macro.
 
@@ -15,17 +15,17 @@ This GitHub repository will serve as a database for all software files associate
     <th>Additional Information</th>
   <tr>
     <td>iOS</td>
-    <td>7 and up</td>
+    <td>7-12</td>
     <td>2014</td>
-    <td>Compatible with iOS7 and newer versions using Switch Control</td>
+    <td>Compatible with iOS7-12 using Switch Control. For iOS13+ or iPadOS, see <i>LipSync</i> or <i>LipSync Wireless.</i></td>
   </tr>
   <tr>
     <td>Android</td>
-    <td></td>
-    <td></td>
-    <td>Requires enabling Switch Access or Universal Switch accessibility feature</td>
-  </tr>
-  </table> 
+    <td>5+</td>
+    <td>2014</td>
+    <td>Requires enabling Switch Access or Universal Switch accessibility feature.</td>
+
+
 
 ## Download
 
@@ -36,8 +36,8 @@ This GitHub repository will serve as a database for all software files associate
     <th>Format</th>
     <th>Link</th>
   <tr>
-    <td>Manual</td>
-    <td>1.4.6.1</td>
+    <td>Assembly Manual</td>
+    <td>1.5</td>
     <td>PDF</td>
     <td><a href="https://github.com/makersmakingchange/LipSync-Macro/blob/master/LipSync_Manual.pdf">LipSync_Manual.pdf</a></td>
   </tr>
@@ -46,6 +46,12 @@ This GitHub repository will serve as a database for all software files associate
     <td>1.0</td>
     <td>PDF</td>
     <td><a href="https://github.com/makersmakingchange/LipSync-Macro/blob/master/LipSync_Macro_Setup_Guide.pdf">LipSync_Macro_Setup_Guide.pdf</a></td>
+  </tr>
+  <tr>
+    <td>LipSync Macro User Guide</td>
+    <td>1.0</td>
+    <td>PDF</td>
+    <td><a href="https://github.com/makersmakingchange/LipSync-Macro/blob/master/LipSync_Macro_User_Guide.pdf">LipSync_Macro_User_Guide.pdf</a></td>
   </tr>
   <tr>
      <td>Mounting Document</td>
@@ -84,7 +90,7 @@ This GitHub repository will serve as a database for all software files associate
     <td><a href="https://raw.githubusercontent.com/makersmakingchange/LipSync-Macro/master/Hardware/PCB_design/LipSync_Interface_Board.sch">LipSync_Interface_Board.sch</a></td>
   </tr>
     <tr>
-    <td rowspan="9">Housing_design</td>
+    <td rowspan="9">Housing Design</td>
     <td rowspan="9">2.2d</td>
     <td rowspan="9">STL</td>
     <td><a href="https://raw.githubusercontent.com/makersmakingchange/LipSync-Macro/master/Hardware/Housing_design/LipSync_Button.STL">LipSync_Button.STL</a></td>
