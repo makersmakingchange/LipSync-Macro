@@ -228,7 +228,7 @@ void loop() {
     Serial.print(yHigh);
     Serial.print(",");
     Serial.println(yLow); 
-    delay(100);
+    delay(150);
   }
 
   //Map FSR values to (0 to 16 ) range 
