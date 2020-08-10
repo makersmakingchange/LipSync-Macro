@@ -53,7 +53,7 @@
 #define RAW_MODE false
 #define SENSITIVITY_COUNTER 5
 #define PRESSURE_THRESHOLD 10                   //Pressure sip and puff threshold 
-#define FIXED_SWITCH_DELAY 20                            //Increase this value to slow down the reaction time
+#define FIXED_SWITCH_DELAY 20                   //Increase this value to slow down the reaction time
 
 
 #define ACTION_BUTTON_1 0                       //A1.Short Puff: Enter 
@@ -76,6 +76,7 @@
 #define JS_OUT_DEAD_ZONE 1
 #define JS_OUT_MAX 127
 #define JS_OUT_MIN 5
+#define CHANGE_DEFAULT_TOLERANCE 0.44             //The tolerance in % for changes between current reading and previous reading ( %100 is max FSRs reading )
 
 //***VARIABLE DECLARATION***//
 
@@ -100,11 +101,14 @@ _equationCoef xLowEquation = {};
 _equationCoef yHighEquation = {};
 _equationCoef yLowEquation = {};
 
-int xHigh, xLow, yHigh, yLow;                                                   //FSR raw values 
+int xHigh, yHigh, xLow, yLow;                                                   //Current FSR reading variables
+int xHighPrev, yHighPrev, xLowPrev, yLowPrev;                                   //Previous FSR reading variables    
 
 int xHighNeutral, xLowNeutral, yHighNeutral, yLowNeutral;                       //Neutral FSR values at the resting position 
 
 int xHighMax, xLowMax, yHighMax, yLowMax;                                       //Max FSR values which are set to the values from EEPROM
+
+int changeTolerance;                              //The change tolerance between FSRs readings 
 
 
 //The input to output (x to y) curve equation using degree five polynomial equation for each sensitivity level
@@ -186,6 +190,8 @@ void setup() {
   delay(10);
   getSwitchJoystickCalibration(false);            //Get FSR Max calibration values 
   delay(10);
+  changeTolerance = getChangeTolerance(CHANGE_DEFAULT_TOLERANCE,false); // Get change tolerance using max FSR readings and default tolerance percentage 
+  delay(10);
   getPressureThreshold(false);                    //Set the pressure sensor threshold boundaries
   delay(10);
   debugModeEnabled = getDebugMode(false);         //Get the debug mode state
@@ -215,21 +221,12 @@ void loop() {
   yHigh = analogRead(Y_DIR_HIGH_PIN);                 //Read analog values of FSR's : A0
   yLow = analogRead(Y_DIR_LOW_PIN);                   //Read analog values of FSR's : A10
 
-
-  //Debug information 
-  
-  if(debugModeEnabled) {
-    
-    Serial.print("LOG:3:");
-    Serial.print(xHigh);
-    Serial.print(",");
-    Serial.print(xLow);
-    Serial.print(",");
-    Serial.print(yHigh);
-    Serial.print(",");
-    Serial.println(yLow); 
-    delay(150);
-  }
+  //Check the FSR changes from previous reading and set the skip flag to true if the changes are beyond the tolerance 
+  bool skipChange = abs(xHigh - xHighPrev) < changeTolerance && abs(xLow - xLowPrev) < changeTolerance && abs(yHigh - yHighPrev) < changeTolerance && abs(yLow - yLowPrev) < changeTolerance;
+  xHighPrev = xHigh;
+  xLowPrev = xLow;
+  yHighPrev = yHigh;
+  yLowPrev = yLow;
 
   //Map FSR values to (0 to 16 ) range 
   float xHighMapped=getMappedFSRValue(xHigh, joystickDeadzone, xHighNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, xHighEquation);
@@ -252,7 +249,7 @@ void loop() {
   if (!rawModeEnabled && ((abs(xOut)) > 0) || ((abs(yOut)) > 0)) {
    pollCounter++;
    delay(15);
-      if (pollCounter >= 5) {
+      if(!skipChange && pollCounter >= 5) {
           if ((xOut >= JS_OUT_MIN) && (-JS_OUT_MIN < yOut < JS_OUT_MIN) && ((abs(xOut)) > (abs(yOut)))) {
               //Right arrow key
               //Serial.println("Right");
@@ -277,6 +274,21 @@ void loop() {
         pollCounter = 0;
         }
 
+  }
+
+    //Debug information 
+  
+  if(debugModeEnabled) {
+    
+    Serial.print("LOG:3:");
+    Serial.print(xHigh);
+    Serial.print(",");
+    Serial.print(xLow);
+    Serial.print(",");
+    Serial.print(yHigh);
+    Serial.print(",");
+    Serial.println(yLow); 
+    delay(150);
   }
   
   if(rawModeEnabled) {
@@ -650,10 +662,10 @@ void setSwitchJoystickInitialization(bool responseEnabled) {
   delay(10);
 
   //Set the neutral values 
-  xHighNeutral = xHigh;
-  xLowNeutral = xLow;
-  yHighNeutral = yHigh;
-  yLowNeutral = yLow;
+  xHighPrev = xHighNeutral = xHigh;
+  xLowPrev = xLowNeutral = xLow;
+  yHighPrev = yHighNeutral = yHigh;
+  yLowPrev = yLowNeutral = yLow;
 
   //Get the max values from Memory 
   EEPROM.get(22, xHighMax);
@@ -760,6 +772,28 @@ void setSwitchJoystickCalibration(bool responseEnabled) {
   Serial.print(",");
   Serial.println(xHighMax); 
   delay(10);
+}
+
+//*** GET CHANGE TOLERANCE VALUE CALIBRATION FUNCTION***//
+
+int getChangeTolerance(float changePercent, bool responseEnabled) {
+  int changeTolerance=(int)((xHighMax+xLowMax+yHighMax+yLowMax) * (changePercent/100.0))/4;
+  if(responseEnabled){
+    Serial.print("SUCCESS:CT,0:"); 
+    Serial.print(changePercent); 
+    Serial.print(","); 
+    Serial.print(changeTolerance); 
+    Serial.print(","); 
+    Serial.print(xHighMax); 
+    Serial.print(","); 
+    Serial.print(xLowMax); 
+    Serial.print(",");
+    Serial.print(yHighMax); 
+    Serial.print(",");
+    Serial.println(xHighMax); 
+  }
+  delay(10);
+  return changeTolerance;
 }
 
 //***GET BUTTON MAPPING FUNCTION***//
@@ -963,6 +997,11 @@ void writeSettings(String changeString) {
       setSwitchJoystickCalibration(true);
       delay(5);
     } 
+     //Get change tolerance values if received "CT,0:0" 
+      else if(changeChar[0]=='C' && changeChar[1]=='T' && changeChar[2]=='0' && changeChar[3]=='0' && changeString.length()==4) {
+      getChangeTolerance(CHANGE_DEFAULT_TOLERANCE,true);
+      delay(5);
+    }
     //Get Button mapping : "MP,0:0" , Set Button mapping : "MP,1:012345"
     else if (changeChar[0]=='M' && changeChar[1]=='P' && changeChar[2]=='0' && changeChar[3]=='0' && changeString.length()==4) {
     getButtonMapping(true);
