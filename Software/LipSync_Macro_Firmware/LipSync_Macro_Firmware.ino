@@ -21,7 +21,7 @@
 
 //Developed BY : MakersMakingChange
 //Firmware : LipSync_Macro_Firmware
-//VERSION : 1.1 (3 July 2020)
+//VERSION : 1.1 (18 Aug 2020)
 
 #include <EEPROM.h>
 #include <math.h>
@@ -48,7 +48,7 @@
 
 //***CUSTOMIZABLE VARIABLES***//
 
-#define JS_FSR_DEADZONE 60                       //The deadzone for input FSR analog value
+#define JS_MOVE_RADIUS 30                       //The deadzone for input FSR analog value
 #define DEBUG_MODE false
 #define RAW_MODE false
 #define SENSITIVITY_COUNTER 5
@@ -107,9 +107,15 @@ int xHighPrev, yHighPrev, xLowPrev, yLowPrev;                                   
 int xHighNeutral, xLowNeutral, yHighNeutral, yLowNeutral;                       //Neutral FSR values at the resting position 
 
 int xHighMax, xLowMax, yHighMax, yLowMax;                                       //Max FSR values which are set to the values from EEPROM
+float xHighYHigh, xHighYLow, xLowYLow, xLowYHigh;
+
+float xHighMapped, xLowMapped, yHighMapped, yLowMapped;
 
 int xHighChangeTolerance, yHighChangeTolerance, xLowChangeTolerance, yLowChangeTolerance;       //The tolerance of changes in FSRs readings 
 
+int xOut, yOut;
+
+float xDelta, yDelta;
 
 //The input to output (x to y) curve equation using degree five polynomial equation for each sensitivity level
 _equationCoef levelEquation1 = {0.0004,-0.0041,0.0000,-0.0185,1.8000,0.0000};
@@ -182,30 +188,32 @@ void setup() {
 
 
   delay(1000);
-  getModelNumber(false);                          //Get LipSync model number 
+  getModelNumber(false);                                //Get LipSync model number 
   delay(10);
   sensitivityCounter = getJoystickSensitivity(false);   //Get saved joystick sensitivity parameter from EEPROM and sets the sensitivity counter
   delay(10);
-  setSwitchJoystickInitialization(false);        //Set the Home joystick and generate movement threshold boundaries
+  setSwitchJoystickInitialization(false);               //Set the Home joystick and generate movement threshold boundaries
   delay(10);
-  getSwitchJoystickCalibration(false);            //Get FSR Max calibration values 
+  getSwitchJoystickCalibration(false);                  //Get FSR Max calibration values 
   delay(10);
-  getChangeTolerance(CHANGE_DEFAULT_TOLERANCE,false); // Get change tolerance using max FSR readings and default tolerance percentage 
+  getFSREquation();                                     //Get FSR equations
   delay(10);
-  getPressureThreshold(false);                    //Set the pressure sensor threshold boundaries
+  getChangeTolerance(CHANGE_DEFAULT_TOLERANCE,false);   // Get change tolerance using max FSR readings and default tolerance percentage 
   delay(10);
-  debugModeEnabled = getDebugMode(false);         //Get the debug mode state
+  getPressureThreshold(false);                          //Set the pressure sensor threshold boundaries
   delay(10);
-  rawModeEnabled = getRawMode(false);             //Get the raw mode state
+  debugModeEnabled = getDebugMode(false);               //Get the debug mode state
+  delay(10);
+  rawModeEnabled = getRawMode(false);                   //Get the raw mode state
   delay(50); 
-  joystickDeadzone = getDeadzone(false);         //Get the deadzone value 
+  joystickDeadzone = getDeadzone(false);                //Get the deadzone value 
   delay(10);
   getButtonMapping(false); 
   delay(10);
 
 
-  ledBlink(4, 250, 3);                            //End initialization visual feedback
-  
+  ledBlink(4, 250, 3);                                   //End initialization visual feedback
+  delay(10);
 }
 
 //-----------------------------------------------------------------------------------//
@@ -228,58 +236,58 @@ void loop() {
   yHighPrev = yHigh;
   yLowPrev = yLow;
 
-  //Map FSR values to (0 to 16 ) range 
-  float xHighMapped=getMappedFSRValue(xHigh, joystickDeadzone, xHighNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, xHighEquation);
-  float xLowMapped=getMappedFSRValue(xLow, joystickDeadzone, xLowNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, xLowEquation);
-  float yHighMapped=getMappedFSRValue(yHigh, joystickDeadzone, yHighNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, yHighEquation);
-  float yLowMapped=getMappedFSRValue(yLow, joystickDeadzone, yLowNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, yLowEquation);
-    
-  //Calculate the x and y delta values 
-  float xDelta = xHighMapped - xLowMapped;                            
-  float yDelta = yHighMapped - yLowMapped;   
-    
-  //Get the final X and Y output values for Joystick set axis function
-  int xOut = getXYValue(xDelta, JS_OUT_DEAD_ZONE, JS_OUT_MAX, levelEquations[sensitivityCounter]);
-  int yOut = getXYValue(yDelta, JS_OUT_DEAD_ZONE, JS_OUT_MAX, levelEquations[sensitivityCounter]);
+  xHighYHigh = sqrt(sq(((xHigh - xHighNeutral) > 0) ? (float)(xHigh - xHighNeutral) : 0.0) + sq(((yHigh - yHighNeutral) > 0) ? (float)(yHigh - yHighNeutral) : 0.0));     //The sq() function raises thr input to power of 2 and is returning the same data type int->int
+  xHighYLow = sqrt(sq(((xHigh - xHighNeutral) > 0) ? (float)(xHigh - xHighNeutral) : 0.0) + sq(((yLow - yLowNeutral) > 0) ? (float)(yLow - yLowNeutral) : 0.0));    //The sqrt() function raises input to power 1/2, returning a float type
+  xLowYHigh = sqrt(sq(((xLow - xLowNeutral) > 0) ? (float)(xLow - xLowNeutral) : 0.0) + sq(((yHigh - yHighNeutral) > 0) ? (float)(yHigh - yHighNeutral) : 0.0));          //These are the vector magnitudes of each quadrant 1-4. Since the FSRs all register
+  xLowYLow = sqrt(sq(((xLow - xLowNeutral) > 0) ? (float)(xLow - xLowNeutral) : 0.0) + sq(((yLow - yLowNeutral) > 0) ? (float)(yLow - yLowNeutral) : 0.0));         //a larger digital value with a positive application force, a large negative difference
 
-  xOut = map(xOut, -128, 128, -10, 10);                   //Map back x and y range from (-128 to 128) as current bounds to (0 to 1023) as target bounds
-  yOut = map(yOut, -128, 128, -10, 10);
+  if ((xHighYHigh > joystickDeadzone) || (xHighYLow > joystickDeadzone) || (xLowYLow > joystickDeadzone) || (xLowYHigh > joystickDeadzone)) {
+    //Map FSR values to (0 to 16 ) range 
+    xHighMapped=getMappedFSRValue(xHigh, joystickDeadzone, xHighNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, xHighEquation);
+    xLowMapped=getMappedFSRValue(xLow, joystickDeadzone, xLowNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, xLowEquation);
+    yHighMapped=getMappedFSRValue(yHigh, joystickDeadzone, yHighNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, yHighEquation);
+    yLowMapped=getMappedFSRValue(yLow, joystickDeadzone, yLowNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, yLowEquation);
+      
+    //Calculate the x and y delta values 
+    xDelta = xHighMapped - xLowMapped;                            
+    yDelta = yHighMapped - yLowMapped;   
+      
+    //Get the final X and Y output values for Joystick set axis function
+    xOut = getXYValue(xDelta, JS_OUT_DEAD_ZONE, JS_OUT_MAX, levelEquations[sensitivityCounter]);
+    yOut = getXYValue(yDelta, JS_OUT_DEAD_ZONE, JS_OUT_MAX, levelEquations[sensitivityCounter]);
   
-
-  if (!rawModeEnabled && ((abs(xOut)) > 0) || ((abs(yOut)) > 0)) {
-   pollCounter++;
-   delay(15);
+    xOut = map(xOut, -128, 128, -10, 10);                   //Map back x and y range from (-128 to 128) as current bounds to (0 to 1023) as target bounds
+    yOut = map(yOut, -128, 128, -10, 10);
+    
+  
+    if (!rawModeEnabled && !skipChange && ((abs(xOut)) > 0) || ((abs(yOut)) > 0)) {
+      pollCounter++;
+      delay(15);
       if(!skipChange && pollCounter >= 5) {
-          if ((xOut >= JS_OUT_MIN) && (-JS_OUT_MIN < yOut < JS_OUT_MIN) && ((abs(xOut)) > (abs(yOut)))) {
-              //Right arrow key
-              //Serial.println("Right");
-              sendBluetoothCommand(byte(0x00),byte(0x4F));
-          } 
-          else if ((xOut < -JS_OUT_MIN) && (-JS_OUT_MIN < yOut < JS_OUT_MIN) && ((abs(xOut)) > (abs(yOut)))){
-            //Serial.println("left"); 
-            //Serial.println("Left");
-            sendBluetoothCommand(byte(0x00),byte(0x50));           
-          }
-          else if ((-JS_OUT_MIN < xOut < JS_OUT_MIN) && (yOut < -JS_OUT_MIN) && ((abs(yOut)) > (abs(xOut)))){
-            //Serial.println("Down");     
-            //Serial.println("Down"); 
-            sendBluetoothCommand(byte(0x00),byte(0x51));      
-          }
-          else if ((-JS_OUT_MIN < xOut < JS_OUT_MIN) && (yOut > JS_OUT_MIN) && ((abs(yOut)) > (abs(xOut)))){
-            //Serial.println("Up");  
-            //Serial.println("Up");
-            sendBluetoothCommand(byte(0x00),byte(0x52));        
-          }    
-        delay(5);       
-        pollCounter = 0;
+        if ((xOut >= JS_OUT_MIN) && (-JS_OUT_MIN < yOut < JS_OUT_MIN) && ((abs(xOut)) > (abs(yOut)))) {
+            //Serial.println("Right");
+            sendBluetoothCommand(byte(0x00),byte(0x4F));
+        } 
+        else if ((xOut < -JS_OUT_MIN) && (-JS_OUT_MIN < yOut < JS_OUT_MIN) && ((abs(xOut)) > (abs(yOut)))){
+          //Serial.println("left"); 
+          sendBluetoothCommand(byte(0x00),byte(0x50));           
         }
-
+        else if ((-JS_OUT_MIN < xOut < JS_OUT_MIN) && (yOut < -JS_OUT_MIN) && ((abs(yOut)) > (abs(xOut)))){
+          //Serial.println("Down");     
+          sendBluetoothCommand(byte(0x00),byte(0x51));      
+        }
+        else if ((-JS_OUT_MIN < xOut < JS_OUT_MIN) && (yOut > JS_OUT_MIN) && ((abs(yOut)) > (abs(xOut)))){
+          //Serial.println("Up");  
+          sendBluetoothCommand(byte(0x00),byte(0x52));        
+        }    
+      delay(5);       
+      pollCounter = 0;
+      }
+    }
   }
 
-    //Debug information 
-  
+  //Debug information 
   if(debugModeEnabled) {
-    
     Serial.print("LOG:3:");
     Serial.print(xHigh);
     Serial.print(",");
@@ -292,8 +300,8 @@ void loop() {
   }
   
   if(rawModeEnabled) {
-   sendRawData(xOut,yOut,sipAndPuffRawHandler(),xHigh,xLow,yHigh,yLow);
-   delay(5);
+    sendRawData(xOut,yOut,sipAndPuffRawHandler(),xHigh,xLow,yHigh,yLow);
+    delay(5);
   }
   //Perform sip and puff actions raw mode is disabled 
   else {
@@ -302,9 +310,7 @@ void loop() {
   }                                                       //Pressure sensor sip and puff functions                                                   //Pressure sensor sip and puff functions
 
   pushButtonHandler(BUTTON_UP_PIN,BUTTON_DOWN_PIN); 
-  
   delay(JS_DELAY);                                      //The fixed delay for each action loop
-
 }
 
 //***END OF INFINITE LOOP***//
@@ -355,7 +361,7 @@ int getJoystickSensitivity(bool responseEnabled) {
 
 //***INCREASE SENSITIVITY LEVEL FUNCTION***//
 
-int increaseJoystickSensitivity (int sensitivity,bool responseEnabled) {
+int increaseJoystickSensitivity (int sensitivity,bool cmdResponseEnabled) {
   sensitivity++;
 
   if (sensitivity == 11) {
@@ -366,7 +372,7 @@ int increaseJoystickSensitivity (int sensitivity,bool responseEnabled) {
     EEPROM.put(2, sensitivity);
     delay(25);
   }
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:"); 
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:"); 
   Serial.print("SS,1:");
   Serial.println(sensitivity); 
   delay(5);
@@ -375,7 +381,7 @@ int increaseJoystickSensitivity (int sensitivity,bool responseEnabled) {
 
 //***DECREASE SENSITIVITY LEVEL FUNCTION***//
 
-int decreaseJoystickSensitivity(int sensitivity,bool responseEnabled) {
+int decreaseJoystickSensitivity(int sensitivity,bool cmdResponseEnabled) {
   sensitivity--;
   if (sensitivity == -1) {
     ledBlink(6, 50, 3);
@@ -390,7 +396,7 @@ int decreaseJoystickSensitivity(int sensitivity,bool responseEnabled) {
     EEPROM.put(2, sensitivity);
     delay(25);
   }
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:"); 
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:"); 
   Serial.print("SS,1:");
   Serial.println(sensitivity);  
   delay(5);
@@ -583,17 +589,17 @@ bool setRawMode(bool rawState,bool responseEnabled) {
 //***GET DEADZONE VALUE FUNCTION***//
 
 int getDeadzone(bool responseEnabled) {
-  int deadzoneValue = JS_FSR_DEADZONE;
+  int deadzoneValue = JS_MOVE_RADIUS;
   if(SERIAL_SETTINGS) {
     EEPROM.get(38, deadzoneValue);
     delay(5);
-    if(deadzoneValue<=0 || deadzoneValue>99) {
-      EEPROM.put(38, JS_FSR_DEADZONE);
+    if(deadzoneValue<30 || deadzoneValue>99) {
+      EEPROM.put(38, JS_MOVE_RADIUS);
       delay(5);
-      deadzoneValue=JS_FSR_DEADZONE;
+      deadzoneValue=JS_MOVE_RADIUS;
       }    
   } else {
-    deadzoneValue=JS_FSR_DEADZONE;
+    deadzoneValue=JS_MOVE_RADIUS;
     delay(5);    
   }
   if(responseEnabled) {
@@ -608,16 +614,16 @@ int getDeadzone(bool responseEnabled) {
 
 int setDeadzone(int deadzoneValue,bool responseEnabled) {
   if(SERIAL_SETTINGS) {
-    if(deadzoneValue>0 || deadzoneValue<=99) {
+    if(deadzoneValue>30 && deadzoneValue<=99) {
       EEPROM.put(38, deadzoneValue);
       delay(5);
     } else {
-      EEPROM.put(38, JS_FSR_DEADZONE);
+      EEPROM.put(38, JS_MOVE_RADIUS);
       delay(5);
-      deadzoneValue=JS_FSR_DEADZONE;
+      deadzoneValue=JS_MOVE_RADIUS;
     }
   } else {
-    deadzoneValue=JS_FSR_DEADZONE;
+    deadzoneValue=JS_MOVE_RADIUS;
     delay(5);    
   }
   if(responseEnabled) {
@@ -645,7 +651,7 @@ void getSwitchJoystickInitialization() {
 
 //***SET SWITCH JOYSTICK INITIALIZATION FUNCTION***//
 
-void setSwitchJoystickInitialization(bool responseEnabled) {
+void setSwitchJoystickInitialization(bool cmdResponseEnabled) {
 
   ledOn(1);
   
@@ -677,17 +683,7 @@ void setSwitchJoystickInitialization(bool responseEnabled) {
   EEPROM.get(28, yLowMax);
   delay(10);
 
-  //Create equations to map FSR behavior 
-  xHighEquation = getFSREquation(xHighNeutral,xHighMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-  xLowEquation = getFSREquation(xLowNeutral,xLowMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-  yHighEquation = getFSREquation(yHighNeutral,yHighMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-  yLowEquation = getFSREquation(yLowNeutral,yLowMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
   Serial.print("IN,1:"); 
   Serial.print(xHighNeutral); 
   Serial.print(","); 
@@ -717,34 +713,34 @@ void getSwitchJoystickCalibration(bool responseEnable) {
 
 //*** SET SWITCH JOYSTICK CALIBRATION FUNCTION***//
 
-void setSwitchJoystickCalibration(bool responseEnabled) {
+void setSwitchJoystickCalibration(bool cmdResponseEnabled) {
 
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
   Serial.println("CA,1:0");                                                   //Start the joystick calibration sequence 
   ledBlink(4, 300, 3);
 
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
   Serial.println("CA,1:1"); 
   ledBlink(6, 500, 1);
   //yHighMax = analogRead(Y_DIR_HIGH_PIN);
   yHighMax = getAverage(Y_DIR_HIGH_PIN,10);
   ledBlink(1, 1000, 2);
 
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
   Serial.println("CA,1:2"); 
   ledBlink(6, 500, 1);
   //xHighMax = analogRead(X_DIR_HIGH_PIN);
   xHighMax = getAverage(X_DIR_HIGH_PIN,10);
   ledBlink(1, 1000, 2);
 
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
   Serial.println("CA,1:3"); 
   ledBlink(6, 500, 1);
   //yLowMax = analogRead(Y_DIR_LOW_PIN);
   yLowMax = getAverage(Y_DIR_LOW_PIN,10);
   ledBlink(1, 1000, 2);
 
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
   Serial.println("CA,1:4"); 
   ledBlink(6, 500, 1);
   //xLowMax = analogRead(X_DIR_LOW_PIN);
@@ -765,7 +761,7 @@ void setSwitchJoystickCalibration(bool responseEnabled) {
 
   ledBlink(5, 250, 3);
 
-  (responseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
+  (cmdResponseEnabled) ? Serial.print("SUCCESS:") : Serial.print("MANUAL:");
   Serial.print("CA,1:5:"); 
   Serial.print(xHighMax); 
   Serial.print(","); 
@@ -874,7 +870,7 @@ void factoryReset(bool responseEnabled) {
     sensitivityCounter=SENSITIVITY_COUNTER;
     debugModeEnabled=DEBUG_MODE;  
     rawModeEnabled=RAW_MODE;
-    joystickDeadzone=JS_FSR_DEADZONE;
+    joystickDeadzone=JS_MOVE_RADIUS;
                                        
     delay(10);
     }
@@ -1073,9 +1069,23 @@ float getMappedFSRValue(int rawValue, int deadzoneInputValue, int neutralValue, 
   return mappedValue;
 }
 
-//***GET THE EQUATION COEFFICIENTS FOR MAPPING RAW FSR VALUES TO MAPPED VALUE FUNCTION***//
+//***GET THE MAPPED FSR EQUATIONS FUNCTION***//
 
-_equationCoef getFSREquation(int x1,int x2,int y1,int y2) {
+void getFSREquation() {
+  //Create equations to map FSR behavior 
+  xHighEquation = setFSREquation(xHighNeutral,xHighMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
+  delay(10);
+  xLowEquation = setFSREquation(xLowNeutral,xLowMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
+  delay(10);
+  yHighEquation = setFSREquation(yHighNeutral,yHighMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
+  delay(10);
+  yLowEquation = setFSREquation(yLowNeutral,yLowMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
+  delay(10);
+}
+
+//***SET THE EQUATION COEFFICIENTS FOR MAPPING RAW FSR VALUES TO MAPPED VALUE FUNCTION***//
+
+_equationCoef setFSREquation(int x1,int x2,int y1,int y2) {
   
   //Convert input values from int to float
   float x1Value = (float)x1;
