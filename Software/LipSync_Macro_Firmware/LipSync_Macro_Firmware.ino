@@ -21,7 +21,7 @@
 
 //Developed BY : MakersMakingChange
 //Firmware : LipSync_Macro_Firmware
-//VERSION : 1.1 (18 Aug 2020)
+//VERSION : 1.1 (24 Nov 2020)
 
 #include <EEPROM.h>
 #include <math.h>
@@ -69,7 +69,7 @@
 
 #define BT_CONFIG_NUMBER 1              //Bluetooth Config number for LipSync Macro
 #define JS_DELAY 10                              //The fixed delay for each loop action 
-#define LONG_PRESS_TIME 2
+#define LONG_PRESS_TIME 4
 #define JS_MAPPED_IN_DEADZONE 0.50
 #define JS_MAPPED_IN_NEUTRAL 12
 #define JS_MAPPED_IN_MAX 16.00
@@ -455,10 +455,11 @@ void setPressureThreshold(int pressureThreshold, bool responseEnabled) {
 
 bool getDebugMode(bool responseEnabled) {
   bool debugState=DEBUG_MODE;
+  int debugIntValue;
   if(SERIAL_SETTINGS) {
-    EEPROM.get(34, debugState);
+    EEPROM.get(34, debugIntValue);
     delay(5);
-    if(debugState!=0 && debugState!=1) {
+    if(debugIntValue!=0 && debugIntValue!=1) {
       EEPROM.put(34, DEBUG_MODE);
       delay(5);
       debugState=DEBUG_MODE;
@@ -547,10 +548,11 @@ void sendRawData(int x, int y, int action, int xUp, int xDown,int yUp,int yDown)
 
 bool getRawMode(bool responseEnabled) {
   bool rawState=RAW_MODE;
+  int rawIntValue;
   if(SERIAL_SETTINGS) {
-    EEPROM.get(36, rawState);
+    EEPROM.get(36, rawIntValue);
     delay(5);
-    if(rawState!=0 && rawState!=1) {
+    if(rawIntValue!=0 && rawIntValue!=1) {
       EEPROM.put(36, RAW_MODE);
       delay(5);
       rawState=RAW_MODE;
