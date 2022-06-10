@@ -70,11 +70,6 @@
 #define ACTION_VLONG_PUFF   OUTPUT_JOYSTICK_HOME_RESET  // Default: Joystick Home Reset
 #define ACTION_VLONG_SIP    OUTPUT_NOTHING              // Default: No action
 
-//Example - Reverse sip and puff so puff does right click and sip does left click.
-//To use these settings, uncomment these lines and comment out the corresponding lines above.
-//#define ACTION_SHORT_PUFF   OUTPUT_RIGHT_CLICK
-//#define ACTION_SHORT_SIP    OUTPUT_LEFT_CLICK
-
 #define BT_CONFIG_FLAG false                     //Configure bluetooth ( Configure = true and Not Configure = false ). This is used to reset bluetooth module
 #define BT_CONFIG_NUMBER (byte)4                 //Bluetooth Config number for LipSync Macro
 
@@ -101,7 +96,7 @@
 #define BT_POLL_DELAY 75                          // The delay after each bluetooth data packets sent
 
 //*** DRIFT REDUCTIONS ***// CHANGE WITH CAUTION
-#define JOYSTICK_DEADBAND 30                        // Joystick deadband {ADC steps]
+#define JOYSTICK_DEADBAND 30                      // Joystick deadband {ADC steps]
 #define CHANGE_DEFAULT_TOLERANCE 3                // The tolerance in changes between current reading and previous reading [ADC steps]
 
 //***DON'T CHANGE THESE CONSTANTS***//
@@ -112,13 +107,10 @@
 #define PUFF_PRESSURE_THRESHOLD_MIN (byte)10      // Minimum Pressure puff threshold [percentage]
 #define PUFF_PRESSURE_THRESHOLD_MAX (byte)50      // Maximum Pressure puff threshold [percentage]
 #define INPUT_ACTION_COUNT 6                      // Number of available sip and puff input types  
-#define JOYSTICK_LIFT_THRESOLD 400                     // Opposite FSR value nearing liftoff during purposeful movement [ADC steps]
+#define JOYSTICK_LIFT_THRESOLD 400                // Opposite FSR value nearing liftoff during purposeful movement [ADC steps]
 
-#define JS_MAPPED_IN_DEADZONE 0.50
-#define JS_MAPPED_IN_NEUTRAL 12
-#define JS_MAPPED_IN_MAX 16.00
-#define JS_OUT_DEAD_ZONE 1
-#define JS_OUT_MAX 127
+#define JOYSTICK_MAPPED_MAX 16
+#define JOYSTICK_OUT_MAX 10
 #define JS_OUT_MIN 5
 
 
@@ -197,40 +189,6 @@ const byte UNUSED_PINS[] = {2,                    // Unused pins
 //#define EEPROM_rawModeEnabled     64                  // int:64,65;
 
 //***JOYSTICK FUNCTIONS***// - DO NOT CHANGE
-//Structure for a degree five polynomial 
-typedef struct {                                  
-  float _equationACoef;
-  float _equationBCoef;
-  float _equationCCoef;
-  float _equationDCoef;
-  float _equationECoef;
-  float _equationFCoef;
-} _equationCoef;
-
-
-//Initialize the equation coefficient structure for each FSR reading 
-_equationCoef g_xHighEquation = {};
-_equationCoef g_xLowEquation = {};
-_equationCoef g_yHighEquation = {};
-_equationCoef g_yLowEquation = {};
-
-//The input to output (x to y) curve equation using degree five polynomial equation for each sensitivity level
-_equationCoef g_levelEquation1 = {0.0004,-0.0041,0.0000,-0.0185,1.8000,0.0000};
-_equationCoef g_levelEquation2 = {0.0002,-0.0021,0.0201,-0.3704,4.3000,0.0000};
-_equationCoef g_levelEquation3 = {-0.0008,0.0314,-0.3565,1.2731,3.6056,0.0000};
-_equationCoef g_levelEquation4 = {0.0001,-0.0005,0.0309,-0.4954,7.2167,0.0000};
-_equationCoef g_levelEquation5 = {-0.0004,0.0175,-0.2145,1.0093,5.1333,0.0000};
-_equationCoef g_levelEquation6 = {0.0000,0.0000,0.0000,0.0000,8.4667,0.0000};
-_equationCoef g_levelEquation7 = {-0.0001,0.0062,-0.125,0.7778,9.3000,0.0000};
-_equationCoef g_levelEquation8 = {-0.0004,0.0195,-0.3133,1.6574,10.6889,0.0000};
-_equationCoef g_levelEquation9 = {0.0001,-0.0010,0.0093,-0.9907,21.2444,0.0000};
-_equationCoef g_levelEquation10 = {0.0008,-0.0303,0.5062,-5.1157,35.5500,0.0000};
-_equationCoef g_levelEquation11 = {-0.0001,-0.0051,0.3441,-6.1204,45.4111,0.0000};
-
-
-//All sensitivity levels
-_equationCoef g_levelEquations[11] = {g_levelEquation1, g_levelEquation2, g_levelEquation3, g_levelEquation4, g_levelEquation5, g_levelEquation6, g_levelEquation7, g_levelEquation8, g_levelEquation9, g_levelEquation10, g_levelEquation11};
-
 
 //***API FUNCTIONS***// - DO NOT CHANGE
 typedef void (*FunctionPointer)(bool, bool, int*); // Type definition for API function pointer
@@ -238,7 +196,7 @@ typedef void (*FunctionPointer)(bool, bool, int*); // Type definition for API fu
 typedef struct                                    // Type definition for API function list
 {
   String _command;                                // Unique two character command code
-  int _parameter;                              // Parameter that is passed to function
+  int _parameter;                                 // Parameter that is passed to function
   FunctionPointer _function;                      // API function pointer
 } _functionList;
 
@@ -261,8 +219,8 @@ _functionList getJoystickInitializationFunction = {"IN,0", 0, &getJoystickInitia
 _functionList setJoystickInitializationFunction = {"IN,1", 1, &setJoystickInitialization};
 _functionList getJoystickCalibrationFunction =    {"CA,0", 0, &getJoystickCalibration};
 _functionList setJoystickCalibrationFunction =    {"CA,1", 1, &setJoystickCalibration};
-//_functionList getChangeToleranceFunction =        {"CT,0", 0, &getChangeTolerance};
-//_functionList setChangeToleranceFunction =        {"CT,1", 1, &setChangeTolerance};
+_functionList getChangeToleranceFunction =        {"CT,0", 0, &getChangeTolerance};
+_functionList setChangeToleranceFunction =        {"CT,1", 1, &setChangeTolerance};
 _functionList getButtonMappingFunction =          {"MP,0", 0, &getButtonMapping};
 _functionList setButtonMappingFunction =          {"MP,1", 2, &setButtonMapping}; // 2 denotes an array parameter
 _functionList getCommunicationModeFunction =      {"CM,0", 0, &getCommunicationMode};
@@ -272,7 +230,7 @@ _functionList setBluetoothConfigFunction =        {"BT,1", 1, &setBluetoothConfi
 _functionList factoryResetFunction =              {"FR,1", 1,  &factoryReset};
 
 // Declare array of API functions
-_functionList apiFunction[27] =
+_functionList apiFunction[29] =
 {
   getModelNumberFunction,
   getVersionNumberFunction,
@@ -292,8 +250,8 @@ _functionList apiFunction[27] =
   setJoystickInitializationFunction,
   getJoystickCalibrationFunction,
   setJoystickCalibrationFunction,
-  //getChangeToleranceFunction,
-  //setChangeToleranceFunction,
+  getChangeToleranceFunction,
+  setChangeToleranceFunction,
   getButtonMappingFunction,
   setButtonMappingFunction,
   getCommunicationModeFunction,
@@ -317,12 +275,14 @@ float g_rotationAngle21;
 float g_rotationAngle22;
 
 byte g_sensitivityCounter;                             // Variable to track current joystick sensitivity level
+byte g_sensitivityValue;                               // Variable to track current joystick sensitivity value 
 
 int  g_joystickPressure;                               // Variable to hold pressure readings
 int  g_sipThreshold;                                   // Sip pressure threshold [ADC steps]
 int  g_puffThreshold;                                  // Puff pressure threshold [ADC steps]
 
 unsigned int g_puffCount, g_sipCount;               // The puff and long sip incremental counter variables
+int g_pollCounter = 0;                              // Cursor poll counter
 
 int g_xHighPrev, g_yHighPrev, g_xLowPrev, g_yLowPrev;             //Previous FSR reading variables                       
 int g_xHighNeutral, g_xLowNeutral, g_yHighNeutral, g_yLowNeutral; //Individual neutral starting positions for each FSR
@@ -333,10 +293,9 @@ float g_xHighMapped, g_xLowMapped, g_yHighMapped, g_yLowMapped;
  
 float g_xDelta, g_yDelta;                               //Calculate the x and y delta values
       
-
 const float g_deadband = JOYSTICK_DEADBAND;             // Deadband distance from center
 
-const int g_changeTolerance = CHANGE_DEFAULT_TOLERANCE; // The tolerance of changes in FSRs readings
+int g_changeTolerance;                                 // The tolerance of changes in FSRs readings
 
 bool g_debugModeEnabled;                               // Declare debug enable variable
 bool g_settingsEnabled = false;                        // Serial input settings command mode enabled or disabled
@@ -361,7 +320,7 @@ void setup()
   
   initializePins();                                        // Initialize Arduino input and output pins
 
-  Keyboard.begin();                                           // Initialize the HID mouse functions
+  Keyboard.begin();                                        // Initialize the HID keyboard functions
   delay(1000);
 
   getModelNumber(false, false);                            // Get LipSync model number; Perform factory reset on initial upload.
@@ -369,8 +328,8 @@ void setup()
   setJoystickInitialization(false, false);                 // Set the Home joystick and generate movement threshold boundaries
 
   getJoystickCalibration(false, false);                    // Get FSR Max calibration values
-
-  getFSREquation();                                        //Get FSR equations
+  
+  g_changeTolerance = getChangeTolerance(false, false);    // Get change tolerance using max FSR readings and default tolerance
   
   getSipThreshold(false, false);                           // Get the pressure sensor threshold boundaries
   getPuffThreshold(false, false);                          // Get the pressure sensor threshold boundaries
@@ -383,9 +342,11 @@ void setup()
   
   g_sensitivityCounter = getJoystickSensitivity(false, false);     //Get saved joystick sensitivity parameter from EEPROM and sets the sensitivity counter
 
+  updateJoystickSensitivity(g_sensitivityCounter);
+
   getButtonMapping(false, false);                          // Get the input buttons to actions mappings
 
-  g_rotationAngle = getRotationAngle(false, false);                // Read the saved rotation angle from EEPROM
+  g_rotationAngle = getRotationAngle(false, false);        // Read the saved rotation angle from EEPROM
 
   updateRotationAngle();
 
@@ -575,39 +536,41 @@ bool readJoystick(int &xJoy, int &yJoy, int &dJoy, int &xHigh, int &xLow, int &y
   //Check to see if the joystick has moved outside the deadband
   if( outsideDeadzone && (aboveDelta || joystickLifted) )
   {
-    outputJoystick = true;
-    //Map FSR values to (0 to 16 ) range 
-//    g_xHighMapped=getMappedFSRValue(xHigh, g_deadband, g_xHighNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, g_xHighEquation);
-//    g_xLowMapped=getMappedFSRValue(xLow, g_deadband, g_xLowNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, g_xLowEquation);
-//    g_yHighMapped=getMappedFSRValue(yHigh, g_deadband, g_yHighNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, g_yHighEquation);
-//    g_yLowMapped=getMappedFSRValue(yLow, g_deadband, g_yLowNeutral, JS_MAPPED_IN_DEADZONE, JS_MAPPED_IN_MAX, g_yLowEquation);
-//      
-//    //Calculate the x and y delta values 
-//    g_xDelta = g_xHighMapped - g_xLowMapped;                            
-//    g_yDelta = g_yHighMapped - g_yLowMapped;   
-      
-    //Get the final X and Y output values for Joystick set axis function
-    xJoy = getXYValue(g_xDelta, JS_OUT_DEAD_ZONE, JS_OUT_MAX, g_levelEquations[g_sensitivityCounter]);
-    yJoy = getXYValue(g_yDelta, JS_OUT_DEAD_ZONE, JS_OUT_MAX, g_levelEquations[g_sensitivityCounter]);
-
-    int xOut = map(xJoy, -128, 128, -10, 10);                   //Map back x and y range from (-128 to 128) as current bounds to (0 to 1023) as target bounds
-    int yOut = map(yJoy, -128, 128, -10, 10);
-
-    if ((xOut >= JS_OUT_MIN) && ((abs(xOut)) > (abs(yOut)))) {
-        //Serial.println("Right");
-        dJoy = 2;
-    } 
-    else if ((xOut < -JS_OUT_MIN) && ((abs(xOut)) > (abs(yOut)))){
-      //Serial.println("left"); 
-      dJoy = 4;         
-    }
-    else if ((yOut < -JS_OUT_MIN) && ((abs(yOut)) > (abs(xOut)))){
-      //Serial.println("Down");     
-      dJoy = 3;   
-    }
-    else if ((yOut > JS_OUT_MIN) && ((abs(yOut)) > (abs(xOut)))){
-      //Serial.println("Up");  
-      dJoy = 1;   
+    g_pollCounter++;      //Add to the poll counter
+    
+    if( g_pollCounter >= 5) {
+      g_pollCounter = 0; // Reset poll counter to zero
+      outputJoystick = true;
+      //Map FSR values to (0 to 16 ) range 
+      g_xHighMapped=map(xHigh, g_xHighNeutral, g_xHighMax, 0, JOYSTICK_MAPPED_MAX);
+      g_xLowMapped=map(xLow, g_xLowNeutral, g_xLowMax, 0, JOYSTICK_MAPPED_MAX);
+      g_yHighMapped=map(yHigh, g_yHighNeutral, g_yHighMax, 0, JOYSTICK_MAPPED_MAX);
+      g_yLowMapped=map(yLow, g_yLowNeutral, g_yLowMax, 0, JOYSTICK_MAPPED_MAX);
+        
+      //Calculate the x and y delta values 
+      g_xDelta = xHigh - xLow;                            
+      g_yDelta = yHigh - yLow;   
+        
+      //Get the final X and Y output values for Joystick set axis function
+      xJoy = map(g_xDelta, -JOYSTICK_MAPPED_MAX, JOYSTICK_MAPPED_MAX, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);                   //Map back x and y range from (-128 to 128) as current bounds to (0 to 1023) as target bounds
+      yJoy = map(g_yDelta, -JOYSTICK_MAPPED_MAX, JOYSTICK_MAPPED_MAX, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);
+  
+      if ((xJoy >= g_sensitivityValue) && ((abs(xJoy)) > (abs(yJoy)))) {
+          //Serial.println("Right");
+          dJoy = 2;
+      } 
+      else if ((xJoy < -g_sensitivityValue) && ((abs(xJoy)) > (abs(yJoy)))){
+        //Serial.println("left"); 
+        dJoy = 4;         
+      }
+      else if ((yJoy < -g_sensitivityValue) && ((abs(yJoy)) > (abs(xJoy)))){
+        //Serial.println("Down");     
+        dJoy = 3;   
+      }
+      else if ((yJoy > g_sensitivityValue) && ((abs(yJoy)) > (abs(xJoy)))){
+        //Serial.println("Up");  
+        dJoy = 1;   
+      }
     }       
  
   } //end check deadband 
@@ -634,105 +597,6 @@ void rotateJoystick(int &xJoy, int &yJoy)
   //Update inputs
   xJoy = uJoy;
   yJoy = vJoy;
-}
-//***GET X AND Y VALUE IN (-maxOutputValue,maxOutputValue) RANGE FOR HOST DEVICE BASED ON MAPPED FSR VALUE AND THE DEGREE 5 POLYNOMIAL EQUATION COEFFICIENTS FUNCTION***//
-// Function   : getXYValue
-//
-// Description: This function returns the mapped joystick value using deadzone and coefficients of joystick equations.
-//
-// Parameters :  rawValue : float : The raw input value.
-//               deadzoneOutputValue : int : The joystick output deadzone value.
-//               maxOutputValue : int : The joystick output maximum value.
-//               equationCoef : _equationCoef : The coefficients of joystick equation.
-//
-// Return     : mappedValue : float : The equation coefficient structure to be returned.
-//*********************************//
-int getXYValue(float rawValue, int deadzoneOutputValue , int maxOutputValue, _equationCoef equationCoef) 
-{
-  int xySign = sgn(rawValue);                                                 //Get the sign of input
-  rawValue = abs(rawValue);                                                   //Solve for output regardless of the input sign and multiply the output by the sign ( the polynomial in quadrant 1 and 3 )
-  int xyValue = (int)((equationCoef._equationACoef*pow(rawValue,5))+(equationCoef._equationBCoef*pow(rawValue,4))+(equationCoef._equationCCoef*pow(rawValue,3))+(equationCoef._equationDCoef*pow(rawValue,2))+(equationCoef._equationECoef*rawValue)+equationCoef._equationFCoef);
-  delay(1);                                                                   //The points in quadrant 1 and 3 only (mirror (+,+) to (-,-) )
-  xyValue = (xyValue >= maxOutputValue-deadzoneOutputValue) ? maxOutputValue: (xyValue<=deadzoneOutputValue) ? 0: xyValue;        //Set output value to maximum value if it's in maximum deadzone area and set output value to center value if it's in center deadzone area 
-  delay(1);
-  xyValue = xySign*xyValue;
-  delay(1);
-  return xyValue;
-}
-
-//***GET MAPPED FSR VALUE BASED ON THE EQUATION COEFFICIENTS FUNCTION***//
-// Function   : getMappedFSRValue
-//
-// Description: This function returns the mapped FSR value using deadzone and coefficients of FSR equations.
-//
-// Parameters :  rawValue : int : The FSR raw input value.
-//               deadzoneInputValue : int : The joystick input deadzone value.
-//               neutralValue : int : The FSR neutral value.
-//               deadzoneOutputValue : float : The joystick output deadzone value.
-//               maxOutputValue : float : The joystick output maximum value.
-//               equationCoef : _equationCoef : The coefficients of FSR equation.
-//
-// Return     : mappedValue : float : The equation coefficient structure to be returned.
-//*********************************//
-float getMappedFSRValue(int rawValue, int deadzoneInputValue, int neutralValue, float deadzoneOutputValue, float maxOutputValue, _equationCoef equationCoef) 
-{
-  float mappedValue;
-  rawValue = (rawValue <= (neutralValue+deadzoneInputValue) && rawValue >=(neutralValue-deadzoneInputValue))? neutralValue:rawValue; //Set input value to neutral value if it's in neutral deadzone area 
-  mappedValue = ((equationCoef._equationDCoef*pow(rawValue,2))+(equationCoef._equationECoef*rawValue));                    //Solve for mapped FSR Value using the coefficients of the equation ( result : value from 0 to 16 )
-  mappedValue = (mappedValue>=maxOutputValue-deadzoneOutputValue) ? maxOutputValue: (mappedValue<=deadzoneOutputValue) ? 0.00: mappedValue;                     //Set output value to maximum value if it's in maximum deadzone area and set output value to center value if it's in center deadzone area 
-  return mappedValue;
-}
-
-//***GET THE MAPPED FSR EQUATIONS FUNCTION***//
-// Function   : getFSREquation
-//
-// Description: This function retrieves the coefficients of FSR equations.
-//
-// Parameters : void
-//
-// Return     : void
-//********************//
-void getFSREquation() {
-  //Create equations to map FSR behavior 
-  g_xHighEquation = setFSREquation(g_xHighNeutral,g_xHighMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-  g_xLowEquation = setFSREquation(g_xLowNeutral,g_xLowMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-  g_yHighEquation = setFSREquation(g_yHighNeutral,g_yHighMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-  g_yLowEquation = setFSREquation(g_yLowNeutral,g_yLowMax,JS_MAPPED_IN_NEUTRAL,JS_MAPPED_IN_MAX);
-  delay(10);
-}
-
-//***SET THE EQUATION COEFFICIENTS FOR MAPPING RAW FSR VALUES TO MAPPED VALUE FUNCTION***//
-// Function   : setFSREquation
-//
-// Description: This function returns the FSR equation coefficients using two points
-//
-// Parameters :  x1 : int : Neutral point x coordinate.
-//               x2 : int : Max point x coordinate.
-//               y1 : int : Neutral point y coordinate.
-//               y2 : int : Max point y coordinate.
-//
-// Return     : resultFactor :_equationCoef : The equation coefficient structure to be returned.
-//*********************************//
-_equationCoef setFSREquation(int x1,int x2,int y1,int y2)
-{
-  //Convert input values from int to float
-  float x1Value = (float)x1;
-  float x2Value = (float)x2;
-  float y1Value = (float)y1;
-  float y2Value = (float)y2;
-
-  //Solve for coefficient d
-  float dValue = (y2Value - ((y1Value*x2Value)/x1Value))/(x2Value*(x2Value-x1Value));
-  
-  //Solve for coefficient e
-  float eValue = (y1Value/x1Value)-dValue*x1Value;
-
-  //Output coefficients ( all others are zero )
-  _equationCoef resultFactor = {0.00, 0.00, 0.00, dValue, eValue, 0.00};
-  return resultFactor;
 }
 
 //***FIND SIGN OF VARIABLE FUNCTION***//
@@ -1278,6 +1142,8 @@ void setJoystickSensitivity(bool responseEnabled, bool apiEnabled, int inputSens
     EEPROM.get(EEPROM_sensitivityCounter, g_sensitivityCounter);
     isValidSpeed = false;
   }
+
+  updateJoystickSensitivity(g_sensitivityCounter);
   
   byte responseCode = 0;
   (isValidSpeed) ? responseCode = 0 : responseCode = 3;
@@ -1309,6 +1175,19 @@ void setJoystickSensitivity(bool responseEnabled, bool apiEnabled, int* inputSpe
   setJoystickSensitivity(responseEnabled, apiEnabled, inputSpeedCounter[0]);
 }
 
+//***UPDATE JOYSTICK SENSITIVITY VALUE API FUNCTION***//
+// Function   : updateJoystickSensitivity
+//
+// Description: This function updates the joystick sensitivity value.
+//
+// Parameters :  sensitivityLevel : byte : The current joystick sensitivity level.
+//                                  
+//
+// Return     : void
+void updateJoystickSensitivity(byte sensitivityLevel)
+{
+  g_sensitivityValue = JOYSTICK_OUT_MAX - sensitivityLevel;
+}
 
 //***INCREASE JOYSTICK SENSITIVITY LEVEL FUNCTION***//
 // Function   : increaseJoystickSensitivity
@@ -2176,7 +2055,7 @@ void setJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optional
 //
 // Return     : tempChangeTolerance : int : The current change tolerance.
 //*********************************//
-/*int getChangeTolerance(bool responseEnabled, bool apiEnabled)
+int getChangeTolerance(bool responseEnabled, bool apiEnabled)
 {
   int tempChangeTolerance = CHANGE_DEFAULT_TOLERANCE;
 
@@ -2192,7 +2071,7 @@ void setJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optional
   printResponseSingle(responseEnabled, apiEnabled, true, 0, "CT,0", true, tempChangeTolerance);
   return tempChangeTolerance;
 }
-*/
+
 
 //***GET CHANGE TOLERANCE VALUE CALIBRATION API FUNCTION***//
 // Function   : getChangeTolerance
@@ -2206,14 +2085,14 @@ void setJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optional
 //               optionalArray : int* : The array of int which should contain one element with value of zero.
 //
 // Return     : void
-/*void getChangeTolerance(bool responseEnabled, bool apiEnabled, int* optionalArray)
+void getChangeTolerance(bool responseEnabled, bool apiEnabled, int* optionalArray)
 {
   if (optionalArray[0] == 0)
   {
     getChangeTolerance(responseEnabled, apiEnabled);
   }
 }
-*/
+
 
 //***SET CHANGE TOLERANCE VALUE CALIBRATION FUNCTION***///
 // Function   : setChangeTolerance
@@ -2228,7 +2107,7 @@ void setJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optional
 //
 // Return     : void
 //*********************************//
-/*void setChangeTolerance(bool responseEnabled, bool apiEnabled, int inputChangeTolerance)
+void setChangeTolerance(bool responseEnabled, bool apiEnabled, int inputChangeTolerance)
 {
   bool isValidChangeTolerance = true;
 
@@ -2255,7 +2134,7 @@ void setJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optional
             true, 
             g_changeTolerance);
 }
-*/
+
 
 //***SET CHANGE TOLERANCE VALUE CALIBRATION API FUNCTION***//
 // Function   : setChangeTolerance
@@ -2269,10 +2148,10 @@ void setJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optional
 //               inputChangeTolerance : int* : The array of one element which contains the new change tolerance value.
 //
 // Return     : void
-/*void setChangeTolerance(bool responseEnabled, bool apiEnabled, int* inputChangeTolerance)
+void setChangeTolerance(bool responseEnabled, bool apiEnabled, int* inputChangeTolerance)
 {
   setChangeTolerance(responseEnabled, apiEnabled, inputChangeTolerance[0]);
-}*/
+}
 
 //***GET BUTTON MAPPING FUNCTION***//
 // Function   : getButtonMapping
@@ -2624,10 +2503,11 @@ void factoryReset(bool responseEnabled, bool apiEnabled, int resetType)
     }
     setJoystickSensitivity(false, true, SENSITIVITY_COUNTER);               // Set default sensitive counter
     setRotationAngle(false, true, ROTATION_ANGLE);                          // Set default rotation angle
+    setChangeTolerance(false, true, CHANGE_DEFAULT_TOLERANCE);              // Set default change tolerance
     setDebugMode(false, true, DEBUG_MODE);                                  // Set default debug mode
     g_sensitivityCounter = SENSITIVITY_COUNTER;
+    g_changeTolerance = CHANGE_DEFAULT_TOLERANCE;
     g_debugModeEnabled = DEBUG_MODE;  
-    g_debugModeEnabled = DEBUG_MODE;                                        // Set the default debug mode                                                     // Update the compensation factors
     ledBlink(2, 250, 1);
   }
   else
