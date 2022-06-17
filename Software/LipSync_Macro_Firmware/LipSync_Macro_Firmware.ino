@@ -111,7 +111,6 @@
 
 #define JOYSTICK_MAPPED_MAX 16
 #define JOYSTICK_OUT_MAX 10
-#define JS_OUT_MIN 5
 
 
 int BUTTON_MAPPING[INPUT_ACTION_COUNT] =
@@ -214,7 +213,7 @@ _functionList getRotationAngleFunction =          {"RA,0", 0, &getRotationAngle}
 _functionList setRotationAngleFunction =          {"RA,1", 1,  &setRotationAngle};
 _functionList getJoystickValueFunction =          {"JV,0", 0, &getJoystickValue};
 _functionList getDebugModeFunction =              {"DM,0", 0, &getDebugMode};
-_functionList setDebugModeFunction =              {"DM,1", 1,  &setDebugMode};
+_functionList setDebugModeFunction =              {"DM,1", 1, &setDebugMode};
 _functionList getJoystickInitializationFunction = {"IN,0", 0, &getJoystickInitialization};
 _functionList setJoystickInitializationFunction = {"IN,1", 1, &setJoystickInitialization};
 _functionList getJoystickCalibrationFunction =    {"CA,0", 0, &getJoystickCalibration};
@@ -431,7 +430,6 @@ void joyHandler(void)
 {
   // Reset values
   bool outputJoy = false;
-  int dJoy = 0;
   int xJoy = 0;
   int yJoy = 0;
   int xHigh = 0;
@@ -440,24 +438,24 @@ void joyHandler(void)
   int yLow = 0;
 
   // Measure FSR joystick and determine whether to output mouse commands
-  outputJoy = readJoystick(xJoy, yJoy, dJoy, xHigh, xLow, yHigh, yLow);
+  outputJoy = readJoystick(xJoy, yJoy, xHigh, xLow, yHigh, yLow);
   
   // Apply rotation to joystick movement based on mounting angle.
   rotateJoystick(xJoy, yJoy); 
-  
+
   if (outputJoy) 
-  { // Normal key output ( USB or Wireless )
-    if (dJoy == 1){
-      (g_commMode==0) ? sendKey(byte(0xDA)) : sendBluetoothKey(byte(0x52)); // Output key command    
+  { //Output Directional Keys ( USB or Wireless )
+    if ((xJoy >= g_sensitivityValue) && (abs(xJoy) > abs(yJoy))) {
+       (g_commMode==0) ? sendKey(byte(0xD7)) : sendBluetoothKey(byte(0x4F)); // Output Right Key command    
+    } 
+    else if ((xJoy < -g_sensitivityValue) && (abs(xJoy) > abs(yJoy))){
+      (g_commMode==0) ? sendKey(byte(0xD8)) : sendBluetoothKey(byte(0x50)); // Output Left Key command           
     }
-    else if (dJoy == 2){
-      (g_commMode==0) ? sendKey(byte(0xD7)) : sendBluetoothKey(byte(0x4F)); // Output key command    
+    else if ((yJoy < -g_sensitivityValue) && ((abs(yJoy)) > abs(xJoy))){
+      (g_commMode==0) ? sendKey(byte(0xD9)) : sendBluetoothKey(byte(0x51)); // Output Down Key command    
     }
-    else if (dJoy == 3){
-      (g_commMode==0) ? sendKey(byte(0xD9)) : sendBluetoothKey(byte(0x51)); // Output key command    
-    }
-    else if (dJoy == 4){
-      (g_commMode==0) ? sendKey(byte(0xD8)) : sendBluetoothKey(byte(0x50)); // Output key command    
+    else if ((yJoy > g_sensitivityValue) && ((abs(yJoy)) > abs(xJoy))){
+      (g_commMode==0) ? sendKey(byte(0xDA)) : sendBluetoothKey(byte(0x52)); // Output Up Key command    
     }
     delay(KEY_DELAY);
   }
@@ -466,8 +464,7 @@ void joyHandler(void)
   if (g_debugModeEnabled)
   {
     sendDebugRawData(xJoy, yJoy, sipAndPuffRawValue(), xHigh, xLow, yHigh, yLow);
-    
-  delay(DEBUG_MODE_DELAY);
+    delay(DEBUG_MODE_DELAY);
   }
 }
 
@@ -480,7 +477,6 @@ void joyHandler(void)
 //
 // Parameters :  xJoy : int : This is the output x joystick value.
 //               yJoy : int : This is the output y joystick value.
-//               dJoy : int : This is the output the direction of joystick movement value.
 //               xHigh : int : This is the xHigh FSR value.
 //               xLow : int : This is the xLow FSR value.
 //               yHigh : int : This is the yHigh FSR value.
@@ -488,7 +484,7 @@ void joyHandler(void)
 //
 // Return     : outputMouse : bool : This variable is used to indicate if mouse values should be outputted or skipped.
 //*********************************//
-bool readJoystick(int &xJoy, int &yJoy, int &dJoy, int &xHigh, int &xLow, int &yHigh, int &yLow)
+bool readJoystick(int &xJoy, int &yJoy, int &xHigh, int &xLow, int &yHigh, int &yLow)
 {
   bool outputJoystick = false;
 
@@ -548,29 +544,15 @@ bool readJoystick(int &xJoy, int &yJoy, int &dJoy, int &xHigh, int &xLow, int &y
       g_yLowMapped=map(yLow, g_yLowNeutral, g_yLowMax, 0, JOYSTICK_MAPPED_MAX);
         
       //Calculate the x and y delta values 
-      g_xDelta = xHigh - xLow;                            
-      g_yDelta = yHigh - yLow;   
+      g_xDelta = g_xHighMapped - g_xLowMapped;                            
+      g_yDelta = g_yHighMapped - g_yLowMapped;   
         
       //Get the final X and Y output values for Joystick set axis function
       xJoy = map(g_xDelta, -JOYSTICK_MAPPED_MAX, JOYSTICK_MAPPED_MAX, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);                   //Map back x and y range from (-128 to 128) as current bounds to (0 to 1023) as target bounds
       yJoy = map(g_yDelta, -JOYSTICK_MAPPED_MAX, JOYSTICK_MAPPED_MAX, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);
-  
-      if ((xJoy >= g_sensitivityValue) && ((abs(xJoy)) > (abs(yJoy)))) {
-          //Serial.println("Right");
-          dJoy = 2;
-      } 
-      else if ((xJoy < -g_sensitivityValue) && ((abs(xJoy)) > (abs(yJoy)))){
-        //Serial.println("left"); 
-        dJoy = 4;         
-      }
-      else if ((yJoy < -g_sensitivityValue) && ((abs(yJoy)) > (abs(xJoy)))){
-        //Serial.println("Down");     
-        dJoy = 3;   
-      }
-      else if ((yJoy > g_sensitivityValue) && ((abs(yJoy)) > (abs(xJoy)))){
-        //Serial.println("Up");  
-        dJoy = 1;   
-      }
+    
+      xJoy = constrain(xJoy, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);
+      yJoy = constrain(yJoy, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);
     }       
  
   } //end check deadband 
@@ -1186,7 +1168,14 @@ void setJoystickSensitivity(bool responseEnabled, bool apiEnabled, int* inputSpe
 // Return     : void
 void updateJoystickSensitivity(byte sensitivityLevel)
 {
-  g_sensitivityValue = JOYSTICK_OUT_MAX - sensitivityLevel;
+  if(sensitivityLevel == 0)
+  {
+    g_sensitivityValue = JOYSTICK_OUT_MAX - 1;
+  } 
+  else 
+  {
+    g_sensitivityValue = JOYSTICK_OUT_MAX - sensitivityLevel;
+  }
 }
 
 //***INCREASE JOYSTICK SENSITIVITY LEVEL FUNCTION***//
@@ -2835,7 +2824,6 @@ void performCommand(String inputString)
     // Test if input command string matches API command and input parameter string matches API parameter string
     if ( inputCommandString == apiFunction[apiIndex]._command
          && ((int)inputParameterString.toInt() == apiFunction[apiIndex]._parameter
-         || apiFunction[apiIndex]._parameter == 0
          || apiFunction[apiIndex]._parameter == 1 
          || apiFunction[apiIndex]._parameter == 2 ))
     {
