@@ -77,13 +77,13 @@ Once a volunteer maker agrees to take on your request, communicate with them to 
   </tr>
   <tr>
     <td>LipSync Macro Startup Guide</td>
-    <td>1.6</td>
+    <td>1.2</td>
     <td>PDF</td>
     <td><a href="https://github.com/makersmakingchange/LipSync-Macro/blob/master/Documentation/LipSync_Macro_Startup_Guide.pdf">LipSync_Macro_Startup_Guide.pdf</a></td>
   </tr>
   <tr>
     <td>LipSync Macro User Guide</td>
-    <td>1.1</td>
+    <td>1.2</td>
     <td>PDF</td>
     <td><a href="https://github.com/makersmakingchange/LipSync-Macro/blob/master/Documentation/LipSync_Macro_User_Guide.pdf">LipSync_Macro_User_Guide.pdf</a></td>
   </tr>
