@@ -109,7 +109,7 @@ Once a volunteer maker agrees to take on your request, communicate with them to 
     <td>LipSync Macro Firmware</td>
     <td>3.0</td>
     <td>INO</td>
-    <td><a href="https://raw.githubusercontent.com/makersmakingchange/LipSync-Macro/master/Software/LipSync_Firmware/LipSync_Macro_Firmware.ino">LipSync_Macro_Firmware.ino</a></td>
+    <td><a href="https://raw.githubusercontent.com/makersmakingchange/LipSync-Macro/master/Software/LipSync_Macro_Firmware/LipSync_Macro_Firmware.ino">LipSync_Macro_Firmware.ino</a></td>
   </tr>
   <tr>
     <td>LipSync Macro Interface Board Layout</td>
