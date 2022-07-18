@@ -1,578 +1,706 @@
 /*
-//                                                                                                  
-//  +++         .+++:    /++++++++/:.     .:/+++++/: .+++/`     .+++/  ++++.      ++++.     `-/++++++/:
-//  oooo         .ooo:    +ooo:--:+ooo/   :ooo/:::/+/  -ooo+`   .ooo+`  ooooo:     .o-o`   `/ooo+//://+:
-//  oooo         .ooo:    +ooo`    :ooo-  oooo`     `   .ooo+` .ooo+`   oooooo/`   .o-o`  .oooo-`       
-//  oooo         .ooo:    +ooo`    -ooo-  -ooo+:.`       .ooo+.ooo/`    ooo:/oo+.  .o-o`  +ooo.         
-//  oooo         .ooo:    +ooo.`..:ooo+`   `:+oooo+:`     `+ooooo/      ooo: :ooo- .o-o`  oooo          
-//  oooo         .ooo:    +ooooooooo+:`       `-:oooo-     `+ooo/       ooo/  .+oo/.o-o`  +ooo.         
-//  oooo         .ooo:    +ooo-...``             `oooo      /ooo.       ooo/   `/oo-o-o`  .oooo-        
-//  oooo::::::.  .ooo:    +ooo`           :o//:::+ooo:      /ooo.       ooo/     .o-o-o`   ./oooo/:::/+/
-//  +ooooooooo:  .ooo:    /ooo`           -/++ooo+/:.       :ooo.       ooo:      `.o.+      `-/+oooo+/-
-//
-//  ++    ++       +        ++++    ++++++     +++
-//  ob    do      db       dP""bo   oo""Yb    dP"oo  
-//  oob  doo     dPoo     dP   `"   oo__dP   dP   oo 
-//  oooodPoo    dP__oo    oo        oo"oo    oo   dP 
-//  oo YY oo   dP""""oo    oooodP   oo  oo    ooodP  
-//
-//An assistive technology device which is developed to allow quadriplegics to use touchscreen mobile devices by manipulation of a mouth-operated joystick with integrated sip and puff controls.
+  *                 `.:/++`             ....``
+  *              `/ossss: `.`         `--------.`
+  *               /ssso. .----..```..-----------                                                                                                                                  ``
+  *               -ss+``-----------------------.                  ssss       -/++/`              /ss-                                     ./++/-      //+//             oss       `oss-
+  *              `os+ `----------------.......--`                 sssss:    `s400s.              +sH-                                     -sBsss`    :ssBCs             sVs        /++`
+  *    ``      .:ss+ `-------..```````````````````                sso+ss`   +so/ss.   -:::::.    +se-  `---  `-::::.  `-:`.::. .::::-     -su/ss+   `ss:sss  `-::::-`   s5s   .--. ---  .-- -:::-    .::::---.
+  *   .oso+++oossso``---..``          ``..----------.....--.      sso.ss/  -ss-/ss.  :so++sss+   +sn- .oso- /ss+/+ss/ -ss+sss++ss+/+o-    -sr:/ss-  +ss`sss  ooo+osss-  sCs  :ss+` oss. ossooosss+ `oso//osso/
+  *  -ssssssssssss.`--.`                  `.----------------.     sso /ss. os+ /ss.  `.----sss`  +sn+/ss+` :Dr+-.-+ss.-sss-```sss/-.`     -sn:`oso .ss: sss  `.---/ss+  sss:+ss:   oss. oss:```sss`:ss:  .ss+
+  * .ssssssssssss+ ..                        `.--------------.    sso `os+-ss. /ss.  /sso++sss`  +siooss:  +sso+++ooo`-ss+    ./+osso:    -sa: -ss-+so  sss `+ss++oss+  s6s+sss.   oss. oss.   sss``oss++oso.
+  * :+ossssssssss: `                           `------------..`   sso  -ssos/  /ss. .sss.`.sss-` +sn:`+ss/`-sso-.`..- -ss+   `.```:sso    -sb:  +soss.  sss /ss+``:sso.`sBs`-sss-  oss. oss.   sss``oso:::.`
+  *   `-+ssssssss.                               .--------`       ss+   +sso`  /ss.  +3999++sss: /sg- `/ss+.-+sssooo+ .ss+   .osoosso-    -sy:  `sss/   oso .ossoo+osso.s9s  .+ss/ oss` +ss.   oss`.sssoooo+:`
+  *    `+sssssss.                              ` .------`        ```   ````   ```   `...` ... ```     ````  `....`   ```    `....``      ```   ```    ```  `...` `..` ```    ``` ```  ```    ``` +ss---:/sso
+  *     -sssssss:                              .. `----.                                                                                                                                       `sss:-.-:ss+
+  *      `:ossssso                              .-. .----                                                                                                                                        ./+oooo++-`
+  *    `..``-+ssss:                            `---` .----`         `.-::::-` .//-                                                                                                                  ````
+  * `..-----.`.:+ss:                          `----- `------..`   `:osssoooo/ /ss:
+  * `----------.`.-/:`                       .------` .------.   `+ss+-`````. /ss:``..`    ``...`    ``` `...`    ``..````    `...`
+  *  `------------....`                    `.-------. `-----.    /sso         /ss/ossso/  /osssso+.  +o+/ossso- `/oooooooo/ -+ooooo+`
+  *   `--.....---------...```       ```` `.---------. `...-.     oss/         /sso-.-sss- :----+ss+  oss+-.:s1s :ss:``:ss/.:ss/..-sso
+  *            `.------------------..```.--------.`       `      +ss+         /ss:   +ss- -+o++osso  oss.  `s9s -ss+--/ss: ssso+++sss
+  *              `.--------------.```.----------`                .sss/.`   `` /ss:   +ss-:ss+..:sso  oss.   s8s `+ssooo/-  oss/-.....
+  *               `---------..````.------------.                  .ossso+++o+ /ss:   +ss--sso//+sss+-oss.   s4s -sso/:::-` .oss+///+:
+  *               .----..``````......-----------                    .://+//:` .::.   .::` .://:.-//:`-::`   ::: :ss+++ooss: `-:////-`
+  *               .`````....`        ``--------.`                                                              `sso````.sso
+  *                  ``..-.            `-...``                                                                  /ossoooss+.
+  *                                                                                                             `..--..`
+  *
+  *
+  *  +++         .+++:    /++++++++/:.     .:/+++++/: .+++/`     .+++/  ++++.      ++++.     `-/++++++/:
+  *  oooo         .ooo:    +ooo:--:+ooo/   :ooo/:::/+/  -ooo+`   .ooo+`  ooooo:     .o-o`   `/ooo+//://+:
+  *  oooo         .ooo:    +ooo`    :ooo-  oooo`     `   .ooo+` .ooo+`   oooooo/`   .o-o`  .oooo-`
+  *  oooo         .ooo:    +ooo`    -ooo-  -ooo+:.`       .ooo+.ooo/`    ooo:/oo+.  .o-o`  +ooo.
+  *  oooo         .ooo:    +ooo.`..:ooo+`   `:+oooo+:`     `+ooooo/      ooo: :ooo- .o-o`  oooo
+  *  oooo         .ooo:    +ooooooooo+:`       `-:oooo-     `+ooo/       ooo/  .+oo/.o-o`  +ooo.
+  *  oooo         .ooo:    +ooo-...``             `oooo      /ooo.       ooo/   `/oo-o-o`  .oooo-
+  *  oooo::::::.  .ooo:    +ooo`           :o//:::+ooo:      /ooo.       ooo/     .o-o-o`   ./oooo/:::/+/
+  *  +ooooooooo:  .ooo:    /ooo`           -/++ooo+/:.       :ooo.       ooo:      `.o.+      `-/+oooo+/-
+  *
+  *  An open-source mouth operated sip and puff joystick that enables people with limited hand function to emulate a mouse on their computer and/or smartphone.
 */
 
-//Developed BY : MakersMakingChange
-//Firmware : LipSync_Macro_Firmware
-//VERSION : 1.0 (16 September 2019)
+/* 
+ * Copyright (c) Neil Squire Society <info@makersmakingchange.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+//TITLE: LipSync_Macro_Firmware
+//AUTHOR: MakersMakingChange
+//VERSION: 3.0 (27 June 2022)
+//Copyright Neil Squire Society 2016-2022.
 
 #include <EEPROM.h>
-#include <math.h>
+#include <Keyboard.h>
 
-//***PIN ASSIGNMENTS***//
+//***OUTPUT ACTIONS***// - DO NOT CHANGE
+// These are the different actions the LipSync can perform based on different sip and puff inputs.
+#define OUTPUT_NOTHING              (int)0             // No action
+#define OUTPUT_KEY_ENTER            (int)1             // Generates Enter key press
+#define OUTPUT_KEY_SPACE            (int)2             // Generates Space key press
+#define OUTPUT_KEY_DOT              (int)3             // Generates Dot key press
+#define OUTPUT_KEY_DASH             (int)4             // Generates Dash key press
+#define OUTPUT_KEY_F1               (int)5             // Generates F1 key press
+#define OUTPUT_KEY_F2               (int)6             // Generates F2 key press
+#define OUTPUT_JOYSTICK_HOME_RESET  (int)7             // Initiates the joystick home reset routine to reset center position. 
+#define OUTPUT_JOYSTICK_CALIBRATION (int)8             // Initiates the joystick calibration to calibrate joystick range and reset center position.
 
-#define BUTTON_UP_PIN 8                           // Switch Control Button 1: UP - digital input pin 8 (internally pulled-up)
-#define BUTTON_DOWN_PIN 7                         // Switch Control Button 2: DOWN - digital input pin 7 (internally pulled-up)
-#define LED_1_PIN 4                               // LipSync LED Color1 : GREEN - digital output pin 5
-#define LED_2_PIN 5                               // LipSync LED Color2 : RED - digital outputpin 4
+//***OUTPUT MAPPING***// - CUSTOMIZABLE
+//These values can be changed to remap different output actions to different input actions
+#define ACTION_SHORT_PUFF   OUTPUT_KEY_ENTER            // Default: Enter key press
+#define ACTION_SHORT_SIP    OUTPUT_KEY_SPACE            // Default: Space key press
+#define ACTION_LONG_PUFF    OUTPUT_KEY_DOT              // Default: Dot key press
+#define ACTION_LONG_SIP     OUTPUT_KEY_DASH             // Default: Dash key press
+#define ACTION_VLONG_PUFF   OUTPUT_JOYSTICK_HOME_RESET  // Default: Joystick Home Reset
+#define ACTION_VLONG_SIP    OUTPUT_NOTHING              // Default: No action
 
+#define BT_CONFIG_FLAG false                     //Configure bluetooth ( Configure = true and Not Configure = false ). This is used to reset bluetooth module
+#define BT_CONFIG_NUMBER (byte)4                 //Bluetooth Config number for LipSync Macro
+
+//***CUSTOMIZABLE VARIABLES***//
+#define ROTATION_ANGLE 0                          // CCW Rotation angle between Screen "up" to LipSync "up" {0,90,180,270} [degrees]
+
+
+#define PUFF_PRESSURE_THRESHOLD_DEFAULT (byte)10  // Pressure puff threshold [percentage]
+#define SIP_PRESSURE_THRESHOLD_DEFAULT  (byte)10  // Pressure sip threshold [percentage]
+#define PUFF_COUNT_THRESHOLD_MED 150              // Threshold between short and medium puff input [cycle counts]
+#define PUFF_COUNT_THRESHOLD_LONG 750             // Threshold between medium and long puff [cycle counts]
+#define SIP_COUNT_THRESHOLD_MED 150               // Threshold between short and medium puff input [cycle counts]
+#define SIP_COUNT_THRESHOLD_LONG 750              // Threshold between medium and long puff in [cycle counts]
+
+#define SENSITIVITY_COUNTER (byte)5               // Default sensitivity level
+#define KEY_DELAY 150                             // Current key output delay [ms]
+
+#define ACTION_HOLD_DELAY (int)175                // The delay used in drag and scroll functions before existing [ms]
+#define DEBUG_MODE_DELAY (int)150                 // The delay used in debug mode between each reading [ms]
+#define SERIAL_DELAY (byte)5                      // The delay after a serial write [ms]
+#define EEPROM_WRITE_DELAY (byte)10               // The delay after an EEPROM write [ms]
+#define PRESSURE_HANDLER_DELAY (byte)5            // The delay added between pressure read cycles [ms] 
+
+#define BT_POLL_DELAY 75                          // The delay after each bluetooth data packets sent
+
+//*** DRIFT REDUCTIONS ***// CHANGE WITH CAUTION
+#define JOYSTICK_DEADBAND 30                      // Joystick deadband {ADC steps]
+#define CHANGE_DEFAULT_TOLERANCE 3                // The tolerance in changes between current reading and previous reading [ADC steps]
+
+//***DON'T CHANGE THESE CONSTANTS***//
+#define LIPSYNC_MODEL (byte)4                     // LipSync Wireless
+#define LIPSYNC_VERSION (byte)30                  // LipSync Version
+#define SIP_PRESSURE_THRESHOLD_MIN (byte)10       // Minimum Pressure sip threshold [percentage]
+#define SIP_PRESSURE_THRESHOLD_MAX (byte)50       // Maximum Pressure sip threshold [percentage]
+#define PUFF_PRESSURE_THRESHOLD_MIN (byte)10      // Minimum Pressure puff threshold [percentage]
+#define PUFF_PRESSURE_THRESHOLD_MAX (byte)50      // Maximum Pressure puff threshold [percentage]
+#define INPUT_ACTION_COUNT 6                      // Number of available sip and puff input types  
+#define JOYSTICK_LIFT_THRESOLD 400                // Opposite FSR value nearing liftoff during purposeful movement [ADC steps]
+
+#define JOYSTICK_MAPPED_MAX 16
+#define JOYSTICK_OUT_MAX 10
+
+
+int BUTTON_MAPPING[INPUT_ACTION_COUNT] =
+{ ACTION_SHORT_PUFF, ACTION_SHORT_SIP,  ACTION_LONG_PUFF,
+  ACTION_LONG_SIP,   ACTION_VLONG_PUFF, ACTION_VLONG_SIP
+};
+
+//***DON'T CHANGE THESE CONSTANTS***//
+#define XHIGH_DIRECTION 1                         // Mouthpiece right movements correspond to positive (i.e. right) mouse movement
+#define XLOW_DIRECTION -1                         // Mouthpiece left movements correspond to negative (i.e. left) mouse movement
+#define YHIGH_DIRECTION -1                        // Mouthpiece up movements correspond to negative (i.e. up) mouse movement
+#define YLOW_DIRECTION 1                          // Mouthpiece down movements correspond to positive (i.e. down) mouse movement
+
+//*** DEVELOPER CONSTANTS***// - Only change if you know what you're doing.
+#define DEBUG_MODE false                          // Enable debug information to serial output (Default: false)
+#define API_ENABLED true                          // Enable API Serial interface = true , Disable API serial interface = false  
+#define API_OKAY_RESPONSE 0
+#define API_COMMAND_MISSING_RESPONSE 1
+#define API_INCORRECT_FORMAT_RESPONSE 2
+#define API_INCORRECT_PARAMETER_RESPONSE 3    
+
+//***PIN ASSIGNMENTS***// - DO NOT CHANGE
+#define LED_GREEN_PIN 4                           // LipSync LED Color1 : GREEN - digital output pin 5
+#define LED_RED_PIN 5                             // LipSync LED Color2 : RED - digital outputpin 4
+#define BUTTON_DOWN_PIN 7                         // Sensitivity Control Button 2: DOWN - digital input pin 7 (internally pulled-up)
+#define BUTTON_UP_PIN 8                           // Sensitivity Control Button 1: UP - digital input pin 8 (internally pulled-up)
+#define MODE_SELECT_PIN 12                        // LipSync Mode Select - USB mode (g_commMode = 0; jumper on) or Bluetooth mode (g_commMode = 1; jumper off) - digital input pin 12 (internally pulled-up)
 #define TRANS_CONTROL_PIN A3                      // Bluetooth Transistor Control Pin - digital output pin A3
 #define PIO4_PIN A4                               // Bluetooth PIO4_PIN Command Pin - digital output pin A4
-
 #define PRESSURE_PIN A5                           // Sip & Puff Pressure Transducer Pin - analog input pin A5
 #define X_DIR_HIGH_PIN A0                         // X Direction High (Cartesian positive x : right) - analog input pin A0
 #define X_DIR_LOW_PIN A1                          // X Direction Low (Cartesian negative x : left) - digital output pin A1
 #define Y_DIR_HIGH_PIN A2                         // Y Direction High (Cartesian positive y : up) - analog input pin A2
 #define Y_DIR_LOW_PIN A10                         // Y Direction Low (Cartesian negative y : down) - analog input pin A10
 
-//***CUSTOMIZE VALUES***//
+const byte UNUSED_PINS[] = {2,                    // Unused pins
+                            3, 
+                            9, 
+                            11, 
+                            13, 
+                            14, 
+                            15, 
+                            16, 
+                            17}; 
 
-#define PRESSURE_THRESHOLD 0.5                    //Pressure sip and puff threshold 
-#define DEBUG_MODE true                           //Debug mode ( Enabled = true and Disabled = false )
-#define BT_CONFIG_FLAG false                      //Configure bluetooth ( Configure = true and Not Configure = false ). This is used to reset bluetooth module
-#define FIXED_DELAY 20                            //Increase this value to slow down the reaction time
+//***LIPSYNC EEPROM MEMORY***// - DO NOT CHANGE
+#define EEPROM_modelNumber         0                  // int:0,1; 255 on fresh Arduino
+#define EEPROM_sensitivityCounter  2                  // int:2,3; 
+#define EEPROM_defaultIsSet        4                  // int:4,5; 
+//#define EEPROM_yHighComp           6                  // float:6,7,8,9; 
+//#define EEPROM_yLowComp           10                  // float:10,11,12,13; 
+//#define EEPROM_xHighComp          14                  // float:14,15,16,17; 
+//#define EEPROM_xLowComp           18                  // float:18,19,20,21; 
+#define EEPROM_xHighMax           22                  // int:22,23; 
+#define EEPROM_xLowMax            24                  // int:24,25; 
+#define EEPROM_yHighMax           26                  // int:26,27; 
+#define EEPROM_yLowMax            28                  // int:28,29; 
+#define EEPROM_rotationAngle      30                  // int:30,31; 
+#define EEPROM_puffThreshold      32                  // int:32,33; 
+#define EEPROM_sipThreshold       34                  // int:34,35;
+#define EEPROM_debugModeEnabled   36                  // int:34,35; 
+#define EEPROM_deadzoneValue      38                  // int:38,39;
+#define EEPROM_buttonMode         40                  // int:40,41;
+#define EEPROM_buttonMapping1     42                  // int:42,43; 
+#define EEPROM_buttonMapping2     44                  // int:44,45; 
+#define EEPROM_buttonMapping3     46                  // int:46,47; 
+#define EEPROM_buttonMapping4     48                  // int:48,49; 
+#define EEPROM_buttonMapping5     50                  // int:50,51; 
+#define EEPROM_buttonMapping6     52                  // int:52,53; 
+#define EEPROM_configNumber       54                  // int:54,55; 3 when Bluetooth configured 
+//#define EEPROM_compFactor       56                  // int:56,57;
+#define EEPROM_changeTolerance    58                  // int:58,59;
+#define EEPROM_versionNumber      60                  // int:60,61; 
+//#define EEPROM_scrollLevel        62                  // int:62,63; 
+//#define EEPROM_rawModeEnabled     64                  // int:64,65;
 
-//***VARIABLE DECLARATION***//
+//***JOYSTICK FUNCTIONS***// - DO NOT CHANGE
 
-int xHigh, yHigh, xLow, yLow;  
+//***API FUNCTIONS***// - DO NOT CHANGE
+typedef void (*FunctionPointer)(bool, bool, int*); // Type definition for API function pointer
 
-//Declare variables for speed functionality 
-int switchSpeedCounter = 5;  
-int switchDelay;
+typedef struct                                    // Type definition for API function list
+{
+  String _command;                                // Unique two character command code
+  int _parameter;                                 // Parameter that is passed to function
+  FunctionPointer _function;                      // API function pointer
+} _functionList;
 
-int operationMode = 0;                            // Switch between 2 iOS modes
-int bluetoothConfigDone;                          // Binary check of completed Bluetooth configuration
-int pollCounter = 0;                              //Switch poll counter
+// Declare individual API functions with command, parameter, and corresponding function
+_functionList getModelNumberFunction =            {"MN,0", 0, &getModelNumber};
+_functionList getVersionNumberFunction =          {"VN,0", 0, &getVersionNumber};
+_functionList getJoystickSensitivityFunction =    {"SS,0", 0, &getJoystickSensitivity};
+_functionList setJoystickSensitivityFunction =    {"SS,1", 1,  &setJoystickSensitivity};
+_functionList getPuffThresholdFunction =          {"PT,0", 0, &getPuffThreshold};
+_functionList setPuffThresholdFunction =          {"PT,1", 1,  &setPuffThreshold};
+_functionList getSipThresholdFunction =           {"ST,0", 0, &getSipThreshold};
+_functionList setSipThresholdFunction =           {"ST,1", 1,  &setSipThreshold};
+_functionList getPressureValueFunction =          {"PV,0", 0, &getPressureValue};
+_functionList getRotationAngleFunction =          {"RA,0", 0, &getRotationAngle};
+_functionList setRotationAngleFunction =          {"RA,1", 1,  &setRotationAngle};
+_functionList getJoystickValueFunction =          {"JV,0", 0, &getJoystickValue};
+_functionList getDebugModeFunction =              {"DM,0", 0, &getDebugMode};
+_functionList setDebugModeFunction =              {"DM,1", 1, &setDebugMode};
+_functionList getJoystickInitializationFunction = {"IN,0", 0, &getJoystickInitialization};
+_functionList setJoystickInitializationFunction = {"IN,1", 1, &setJoystickInitialization};
+_functionList getJoystickCalibrationFunction =    {"CA,0", 0, &getJoystickCalibration};
+_functionList setJoystickCalibrationFunction =    {"CA,1", 1, &setJoystickCalibration};
+_functionList getChangeToleranceFunction =        {"CT,0", 0, &getChangeTolerance};
+_functionList setChangeToleranceFunction =        {"CT,1", 1, &setChangeTolerance};
+_functionList getButtonMappingFunction =          {"MP,0", 0, &getButtonMapping};
+_functionList setButtonMappingFunction =          {"MP,1", 2, &setButtonMapping}; // 2 denotes an array parameter
+_functionList getCommunicationModeFunction =      {"CM,0", 0, &getCommunicationMode};
+_functionList setCommunicationModeFunction =      {"CM,1", 1, &setCommunicationMode};
+_functionList getBluetoothConfigFunction =        {"BT,0", 0, &getBluetoothConfig};
+_functionList setBluetoothConfigFunction =        {"BT,1", 1, &setBluetoothConfig};
+_functionList factoryResetFunction =              {"FR,1", 1,  &factoryReset};
 
-float sipThreshold;                               //Declare sip and puff variables 
-float puffThreshold;
-float switchActivate;
+// Declare array of API functions
+_functionList apiFunction[29] =
+{
+  getModelNumberFunction,
+  getVersionNumberFunction,
+  getJoystickSensitivityFunction,
+  setJoystickSensitivityFunction,
+  getPuffThresholdFunction,
+  setPuffThresholdFunction,
+  getSipThresholdFunction,
+  setSipThresholdFunction,
+  getPressureValueFunction,
+  getRotationAngleFunction,
+  setRotationAngleFunction,
+  getJoystickValueFunction,
+  getDebugModeFunction,
+  setDebugModeFunction,
+  getJoystickInitializationFunction,
+  setJoystickInitializationFunction,
+  getJoystickCalibrationFunction,
+  setJoystickCalibrationFunction,
+  getChangeToleranceFunction,
+  setChangeToleranceFunction,
+  getButtonMappingFunction,
+  setButtonMappingFunction,
+  getCommunicationModeFunction,
+  setCommunicationModeFunction,
+  getBluetoothConfigFunction,
+  setBluetoothConfigFunction,
+  factoryResetFunction
+};
 
-unsigned int puffCount;
-unsigned int sipCount;
 
-bool settingsEnabled = false; 
+//***GLOBAL VARIABLE DECLARATION***//
+byte g_modelNumber;                                    // LipSync model number variable
+byte g_versionNumber;                                  // LipSync version number variable
 
-//-----------------------------------------------------------------------------------------------------------------------------------
+int g_actionButton[INPUT_ACTION_COUNT];                // Sip & Puff action mapping
+
+int g_rotationAngle = ROTATION_ANGLE;                  // Rotation angle variable (degrees)
+float g_rotationAngle11;                               // Rotation matrix components
+float g_rotationAngle12;
+float g_rotationAngle21;
+float g_rotationAngle22;
+
+byte g_sensitivityCounter;                             // Variable to track current joystick sensitivity level
+byte g_sensitivityValue;                               // Variable to track current joystick sensitivity value 
+
+int  g_joystickPressure;                               // Variable to hold pressure readings
+int  g_sipThreshold;                                   // Sip pressure threshold [ADC steps]
+int  g_puffThreshold;                                  // Puff pressure threshold [ADC steps]
+
+unsigned int g_puffCount, g_sipCount;               // The puff and long sip incremental counter variables
+int g_pollCounter = 0;                              // Cursor poll counter
+
+int g_xHighPrev, g_yHighPrev, g_xLowPrev, g_yLowPrev;             //Previous FSR reading variables                       
+int g_xHighNeutral, g_xLowNeutral, g_yHighNeutral, g_yLowNeutral; //Individual neutral starting positions for each FSR
+
+int g_xHighMax, g_xLowMax, g_yHighMax, g_yLowMax;         //Max FSR values which are set to the values from EEPROM
+
+float g_xHighMapped, g_xLowMapped, g_yHighMapped, g_yLowMapped;
+ 
+float g_xDelta, g_yDelta;                               //Calculate the x and y delta values
+      
+const float g_deadband = JOYSTICK_DEADBAND;             // Deadband distance from center
+
+int g_changeTolerance;                                 // The tolerance of changes in FSRs readings
+
+bool g_debugModeEnabled;                               // Declare debug enable variable
+bool g_settingsEnabled = false;                        // Serial input settings command mode enabled or disabled
+
+int g_commMode = 1;                                    // 0 == USB Communications or 1 == Bluetooth Communications
+
+//-----------------------------------------------------------------------------------//
 
 //***MICROCONTROLLER AND PERIPHERAL MODULES CONFIGURATION***//
-
-void setup() {
-
-  Serial.begin(115200);                           // Set baud rate for serial coms for diagnostic data return from Bluetooth and microcontroller ***MAY REMOVE LATER***
-  Serial1.begin(115200);                          // Set baud rate for Bluetooth module
-
-  pinMode(LED_1_PIN, OUTPUT);                     //Set the LED pin 1 as output(GREEN LED)
-  pinMode(LED_2_PIN, OUTPUT);                     //Set the LED pin 2 as output(RED LED)
-  pinMode(TRANS_CONTROL_PIN, OUTPUT);             //Set the transistor pin as output
-  pinMode(PIO4_PIN, OUTPUT);                      //Set the bluetooth command mode pin as output
-
-  pinMode(PRESSURE_PIN, INPUT);                   //Set the pressure sensor pin input
-  pinMode(X_DIR_HIGH_PIN, INPUT);                 //Define Force sensor pinsas input ( Right FSR )
-  pinMode(X_DIR_LOW_PIN, INPUT);                  //Define Force sensor pinsas input ( Left FSR )
-  pinMode(Y_DIR_HIGH_PIN, INPUT);                 //Define Force sensor pinsas input ( Up FSR )
-  pinMode(Y_DIR_LOW_PIN, INPUT);                  //Define Force sensor pinsas input ( Down FSR )
+// Function   : setup
+//
+// Description: This function handles the initialization of variables, pins, methods, libraries. This function only runs once at powerup or reset.
+//
+// Parameters :  void
+//
+// Return     : void
+//*********************************//
+void setup()
+{
+  Serial.begin(115200);                                    // Initiate serial connection for debug and API control
+  Serial1.begin(115200);                                   //Setting baud rate for Bluetooth AT command 
   
-  pinMode(BUTTON_UP_PIN, INPUT_PULLUP);           //Set the increase switch speed pin to input mode with pullup
-  pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP);         //Set the decrease switch speed pin to input mode with pullup
+  initializePins();                                        // Initialize Arduino input and output pins
 
-  pinMode(2, INPUT_PULLUP);                       //Set the unused pins to input mode with pullups
-  pinMode(3, INPUT_PULLUP);
-  pinMode(9, INPUT_PULLUP);
-  pinMode(11, INPUT_PULLUP);
-  pinMode(12, INPUT_PULLUP);
-  pinMode(13, INPUT_PULLUP);
+  Keyboard.begin();                                        // Initialize the HID keyboard functions
+  delay(1000);
 
+  getModelNumber(false, false);                            // Get LipSync model number; Perform factory reset on initial upload.
 
-  delay(10);
+  setJoystickInitialization(false, false);                 // Set the Home joystick and generate movement threshold boundaries
+
+  getJoystickCalibration(false, false);                    // Get FSR Max calibration values
   
-  while(!Serial1);
+  g_changeTolerance = getChangeTolerance(false, false);    // Get change tolerance using max FSR readings and default tolerance
   
-  pressureSensorInitialization();                 //Initialize the pressure sensor
-  delay(10);
-  readSwitchSpeed();                              // Reads saved switch speed parameter from EEPROM
-  delay(10);
-  operationModeValue();                           // Read saved operation mode parameter from EEPROM
-  delay(10);
-  
-  int execTime = millis();
-  Serial.print("Configuration time: ");
-  Serial.println(execTime);
+  getSipThreshold(false, false);                           // Get the pressure sensor threshold boundaries
+  getPuffThreshold(false, false);                          // Get the pressure sensor threshold boundaries
 
-  ledBlink(4, 250, 3);                            // End the initialization visual feedback
+  g_commMode = getCommunicationMode(false,false);          // Identify the communication mode ( Bluetooth or USB )
   
-  displayVersion();                               //Display firmware version number
+  getBluetoothConfig(false,false);                         // Get bluetooth configure number and reconfigure if it is needed
+
+  g_debugModeEnabled = getDebugMode(false, false);         // Get the debug mode state
   
-  bluetoothConfigure(); 
+  g_sensitivityCounter = getJoystickSensitivity(false, false);     //Get saved joystick sensitivity parameter from EEPROM and sets the sensitivity counter
 
-  calculateSwitchDelay();                         //Calculate switch action delay
+  updateJoystickSensitivity(g_sensitivityCounter);
 
-  //Functions below are for diagnostic feedback only
-  if(DEBUG_MODE==true) {
-    Serial.print("Speed level: ");
-    Serial.println(switchSpeedCounter+1);
-    delay(5);
+  getButtonMapping(false, false);                          // Get the input buttons to actions mappings
+
+  g_rotationAngle = getRotationAngle(false, false);        // Read the saved rotation angle from EEPROM
+
+  updateRotationAngle();
+
+  ledBlink(4, 250, 3);                                     // End initialization visual feedback
+
+}
+
+
+//-----------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------//
+
+//***START OF MAIN LOOP***//
+// Function   : loop
+//
+// Description: This function loops consecutively and responses to changes.
+//
+// Parameters :  void
+//
+// Return     : void
+//*********************************//
+void loop()
+{
+  
+  g_settingsEnabled = serialSettings(g_settingsEnabled); // Check to see if setting option is enabled in Lipsync
+  
+  joyHandler();                                       // Read the joystick values and output keys.
+
+  sipAndPuffHandler(g_commMode);                         // Pressure sensor sip and puff functions
+  delay(5);
+  pushButtonHandler();                     // Check rear push buttons
+
+}
+
+
+//***END OF MAIN LOOP***//
+
+//-----------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------//
+
+//***INITIALIZE PINS FUNCTION ***//
+// Function   : initializePins
+//
+// Description: This function initializes the input/output pins.
+//
+// Parameters :  void
+//
+// Return     : void
+//*********************************//
+void initializePins(void)
+{
+  pinMode(LED_GREEN_PIN, OUTPUT);                 // Set the LED pin 1 as output(GREEN LED)
+  pinMode(LED_RED_PIN, OUTPUT);                   // Set the LED pin 2 as output(RED LED)
+  pinMode(TRANS_CONTROL_PIN, OUTPUT);             // Set the transistor pin as output
+  pinMode(PIO4_PIN, OUTPUT);                      // Set the bluetooth command mode pin as output
+  pinMode(PRESSURE_PIN, INPUT);                   // Set the pressure sensor pin input
+  pinMode(X_DIR_HIGH_PIN, INPUT);                 // Define Force sensor pins as input ( Right FSR )
+  pinMode(X_DIR_LOW_PIN, INPUT);                  // Define Force sensor pins as input ( Left FSR )
+  pinMode(Y_DIR_HIGH_PIN, INPUT);                 // Define Force sensor pins as input ( Up FSR )
+  pinMode(Y_DIR_LOW_PIN, INPUT);                  // Define Force sensor pins as input ( Down FSR )
+  pinMode(BUTTON_UP_PIN, INPUT_PULLUP);           // Set increase sensitivity button pin as input
+  pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP);         // Set decrease sensitivity button pin as input
+  pinMode(MODE_SELECT_PIN, INPUT_PULLUP);         // Set the mode pin as input (USB mode = 0; jumper on , Bluetooth mode; jumper off)
+
+  // Set unused pins as inputs with pullups
+  for (byte pinIndex = 0; pinIndex < sizeof(UNUSED_PINS); pinIndex++)
+  {
+    pinMode(UNUSED_PINS[pinIndex], INPUT_PULLUP);
   }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------
 
-//***START OF INFINITE LOOP***//
+//*** JOYSTICK HANDLER FUNCTION***//
+// Function   : joyHandler
+//
+// Description: This function handles the joystick key actions based on the FSR values
+//
+// Parameters :  void
+//
+// Return     : void
+//*********************************//
+void joyHandler(void)
+{
+  // Reset values
+  bool outputJoy = false;
+  int xJoy = 0;
+  int yJoy = 0;
+  int xHigh = 0;
+  int xLow = 0;
+  int yHigh = 0;
+  int yLow = 0;
 
-void loop() {
-
-  settingsEnabled=serialSettings(settingsEnabled);    //Check to see if setting option is enabled in Lipsync
+  // Measure FSR joystick and determine whether to output mouse commands
+  outputJoy = readJoystick(xJoy, yJoy, xHigh, xLow, yHigh, yLow);
   
-  xHigh = analogRead(X_DIR_HIGH_PIN);                 //Read analog values of FSR's : A0
-  xLow = analogRead(X_DIR_LOW_PIN);                   //Read analog values of FSR's : A1
-  yHigh = analogRead(Y_DIR_HIGH_PIN);                 //Read analog values of FSR's : A0
-  yLow = analogRead(Y_DIR_LOW_PIN);                   //Read analog values of FSR's : A10
+  // Apply rotation to joystick movement based on mounting angle.
+  rotateJoystick(xJoy, yJoy); 
 
-  xHigh = map(xHigh, 0, 1023, 0, 16);                 //Map x and y values from (0 to 1023) bound to (0 to 16) as target bound
-  xLow = map(xLow, 0, 1023, 0, 16);                   //The actual input values are approximately in (0 to 800) bound range
-  yHigh = map(yHigh, 0, 1023, 0, 16);
-  yLow = map(yLow, 0, 1023, 0, 16);
-
-  int xDelta = xHigh - xLow;                          //Calculate the x and y delta values   
-  int yDelta = yHigh - yLow;
- 
-  int xx = (xDelta >= 0)? sq(xDelta):-sq(xDelta);     //Square the magnitude of x and y Delta values
-  int yy = (yDelta >= 0)? sq(yDelta):-sq(yDelta);
-  
-  xx -= (xDelta >= 0)? int(sqrt(yDelta)):-int(sqrt(-yDelta));   //Subtract the square root of y Delta value from x Delta value to make movement smoother 
-  yy -= (yDelta >= 0)? int(sqrt(xDelta)):-int(sqrt(-xDelta));   //Subtract the square root of x Delta value from y Delta value to make movement smoother 
-
-  xx = constrain(xx, -128, 128);                      //Put constrain to set x and y range between -128 and 128 as lower and upper bounds 
-  yy = constrain(yy, -128, 128);
-  
-  xx = map(xx, -128, 128, -10, 10);                   //Map back x and y range from (-128 to 128) as current bounds to (0 to 1023) as target bounds
-  yy = map(yy, -128, 128, -10, 10);
-
-
-  if (((abs(xx)) > 0) || ((abs(yy)) > 0)) {
-   pollCounter++;
-   delay(15);
-      if (pollCounter >= 10) {
-          if ((xx >= 5) && (-5 < yy < 5) && ((abs(xx)) > (abs(yy)))) {
-         if (operationMode == 0) {
-              //Right arrow key
-              bluetoothKeyboardCommand((byte)0x00,byte(0x4F));
-            }
-            else {
-              //Move keyboard cursor to the right direction (Alt/option Key + Right Arrow Key)
-              bluetoothKeyboardCommand((1<<2),byte(0x4F));
-            }
-          } 
-          else if ((xx < -5) && (-5 < yy < 5) && ((abs(xx)) > (abs(yy)))){
-            //Serial.println("left"); 
-            if (operationMode == 0) {
-              //Left arrow key
-              bluetoothKeyboardCommand((byte)0x00,byte(0x50)); 
-            }
-            else {
-              //Move keyboard cursor to the left (Alt/option key + Left arrow key)
-              bluetoothKeyboardCommand((1<<2),byte(0x50)); 
-            }            
-          }
-          else if ((-5 < xx < 5) && (yy < -5) && ((abs(yy)) > (abs(xx)))){
-            //Serial.println("Down"); 
-         if (operationMode == 0) {
-              //Down arrow key
-              bluetoothKeyboardCommand((byte)0x00,byte(0x51));
-            }
-            else {
-              //Begin text selection on the left side of keyboard cursor (Shift Key + Left Arrow key)
-              bluetoothKeyboardCommand((1<<1),byte(0x50));  
-            }            
-          }
-          else if ((-5 < xx < 5) && (yy > 5) && ((abs(yy)) > (abs(xx)))){
-            //Serial.println("Up"); 
-         if (operationMode == 0) {
-              //Up arrow key
-              bluetoothKeyboardCommand((byte)0x00,byte(0x52));
-            }
-            else {
-              //Begin text selection on the right side of keyboard cursor (Shift Key + Right Arrow Key)
-              bluetoothKeyboardCommand((1<<1),byte(0x4F));              
-            }            
-          }    
-        delay(switchDelay);       
-        pollCounter = 0;
-        }
-
-  }
- 
-  if (digitalRead(BUTTON_UP_PIN) == LOW) {
-    delay(250);
-    if (digitalRead(BUTTON_DOWN_PIN) == LOW) {
-    } else {
-      increaseSwitchSpeed();      // Increase switch speed with push button up
-    }
-  }
-
-  if (digitalRead(BUTTON_DOWN_PIN) == LOW) {
-    delay(250);
-    if (digitalRead(BUTTON_UP_PIN) == LOW) {
-    } else {
-      decreaseSwitchSpeed();      // Decrease switch speed with push button down
-    }
-  }
-
-   //Pressure sensor sip and puff functions
-
-  switchActivate = (((float)analogRead(PRESSURE_PIN)) / 1023.0) * 5.0;
-  //Measure the pressure value and compare the result with puff pressure Thresholds 
-  if (switchActivate < puffThreshold) {
-    while (switchActivate < puffThreshold) {
-      switchActivate = (((float)analogRead(PRESSURE_PIN)) / 1023.0) * 5.0;
-      puffCount++;         //Threshold counter
-      delay(5);
-    }
-      if (puffCount < 150) {
-        //Enter or select
-        bluetoothKeyboardCommand(byte(0x00),byte(0x28));
-      } else if (puffCount > 150 && puffCount < 750) {
-        //Dot
-        bluetoothKeyboardCommand(byte(0x00),byte(0x37));    
-      } 
-      delay(switchDelay);
-      puffCount = 0;
-  }
-  //Measure the pressure value and compare the result with sip pressure Thresholds
-  if (switchActivate > sipThreshold) {
-    while (switchActivate > sipThreshold) {
-      switchActivate = (((float)analogRead(PRESSURE_PIN)) / 1023.0) * 5.0;
-      sipCount++;         ///Threshold counter
-      delay(5);
-    }
-      if (sipCount < 150) {
-         //Space
-        bluetoothKeyboardCommand(byte(0x00),byte(0x2C));  
-      } else if (sipCount > 150 && sipCount < 750) {
-        //Dash
-        bluetoothKeyboardCommand(byte(0x00),byte(0x2D));    
-      } else if (sipCount > 750) {
-        changeMode();
-      }
-      delay(switchDelay); 
-      sipCount = 0;
-  }
-}
-
-//***END OF INFINITE LOOP***//
-
-//-----------------------------------------------------------------------------------------------------------------------------------
-
-//***SERIAL SETTINGS FUNCTION TO CHANGE SPEED AND COMMUNICATION MODE USING SOFTWARE***//
-
-bool serialSettings(bool enabled) {
-
-    String inString = "";  
-    bool settingsFlag = enabled;                   //Set the input parameter to the flag returned. This will help to detect that the settings actions should be performed.
-    
-     if (Serial.available()>0)  
-     {  
-       inString = Serial.readString();            //Check if serial has received or read input string and word "settings" is in input string.
-       if (settingsFlag==false && inString=="settings") {
-       Serial.println("Actions:");                //Display list of possible actions 
-       Serial.println("S,(+ or -)");
-       settingsFlag=true;                         //Set the return flag to true so settings actions can be performed in the next call to the function
-       }
-       else if (settingsFlag==true && inString.length()==((2*2)-1)){ //Check if the input parameter is true and the received string is 3 characters only
-        inString.replace(",","");                 //Remove commas 
-        if(inString.length()==2) {                //Perform settings actions if there are only two characters in the string.
-          writeSettings(inString);
-          Serial.println("Successfully changed.");
-        }   
-        Serial.println("Exiting the settings.");
-        settingsFlag=false;   
-       }
-       else if (settingsFlag==true){
-        Serial.println("Exiting the settings.");
-        settingsFlag=false;         
-       }
-       Serial.flush();  
-     }  
-    return settingsFlag;
-}
-
-//***PERFORM SETTINGS FUNCTION TO CHANGE SPEED AND COMMUNICATION MODE USING SOFTWARE***//
-
-void writeSettings(String changeString) {
-    char changeChar[changeString.length()+1];
-    changeString.toCharArray(changeChar, changeString.length()+1);
-
-    //Increase the cursor speed if received "S+" and decrease the cursor speed if received "S-"
-    if(changeChar[0]=='S' && changeChar[1]=='+') {
-      increaseSwitchSpeed();
-      delay(5);
-    } else if (changeChar[0]=='S' && changeChar[1]=='-') {
-      decreaseSwitchSpeed();
-      delay(5);
+  if (outputJoy) 
+  { //Output Directional Keys ( USB or Wireless )
+    if ((xJoy >= g_sensitivityValue) && (abs(xJoy) > abs(yJoy))) {
+       (g_commMode==0) ? sendKey(byte(0xD7)) : sendBluetoothKey(byte(0x4F)); // Output Right Key command    
     } 
-}
+    else if ((xJoy < -g_sensitivityValue) && (abs(xJoy) > abs(yJoy))){
+      (g_commMode==0) ? sendKey(byte(0xD8)) : sendBluetoothKey(byte(0x50)); // Output Left Key command           
+    }
+    else if ((yJoy < -g_sensitivityValue) && ((abs(yJoy)) > abs(xJoy))){
+      (g_commMode==0) ? sendKey(byte(0xD9)) : sendBluetoothKey(byte(0x51)); // Output Down Key command    
+    }
+    else if ((yJoy > g_sensitivityValue) && ((abs(yJoy)) > abs(xJoy))){
+      (g_commMode==0) ? sendKey(byte(0xDA)) : sendBluetoothKey(byte(0x52)); // Output Up Key command    
+    }
+    delay(KEY_DELAY);
+  }
 
-//***CHANGE MODE FUNCTION***//
-
-void changeMode(void) {
-  if (operationMode == 0) {
-    operationMode++;
-  } else {
-    operationMode=0;
-  } 
-  ledBlink(operationMode+1, 500, 1);
-  EEPROM.put(30, operationMode);
-  delay(25);
-}
-
-//***DISPLAY VERSION FUNCTION***//
-
-void displayVersion(void) {
-
-  Serial.println(" --- ");
-  Serial.println("LipSync Macro Firmware Version 1.0 (13 June 2019)");
-  Serial.println(" --- ");
-
-}
-
-//***LED ON FUNCTION***//
-
-void ledOn(int ledNumber) {
-  switch (ledNumber) {
-    case 1: {
-        digitalWrite(LED_1_PIN, HIGH);
-        delay(5);
-        digitalWrite(LED_2_PIN, LOW);
-        break;
-      }
-    case 2: {
-        digitalWrite(LED_2_PIN, HIGH);
-        delay(5);
-        digitalWrite(LED_1_PIN, LOW);
-        break;
-      }
+  //Debug information
+  if (g_debugModeEnabled)
+  {
+    sendDebugRawData(xJoy, yJoy, sipAndPuffRawValue(), xHigh, xLow, yHigh, yLow);
+    delay(DEBUG_MODE_DELAY);
   }
 }
 
-//***LED CLEAR FUNCTION***//
 
-void ledClear(void) {
-  digitalWrite(LED_1_PIN, LOW);
-  digitalWrite(LED_2_PIN, LOW);
+//***READ JOYSTICK FUNCTION**//
+// Function   : readJoystick
+//
+// Description: This function reads the current FSR values, checks if values exceed deadband, and calculates
+//              direction of joystick movement. Outputs true if mouse should be moved.
+//
+// Parameters :  xJoy : int : This is the output x joystick value.
+//               yJoy : int : This is the output y joystick value.
+//               xHigh : int : This is the xHigh FSR value.
+//               xLow : int : This is the xLow FSR value.
+//               yHigh : int : This is the yHigh FSR value.
+//               yLow : int : This is the yLow FSR value.
+//
+// Return     : outputMouse : bool : This variable is used to indicate if mouse values should be outputted or skipped.
+//*********************************//
+bool readJoystick(int &xJoy, int &yJoy, int &xHigh, int &xLow, int &yHigh, int &yLow)
+{
+  bool outputJoystick = false;
+
+  // Measure force sensitive resistors
+  xHigh = analogRead(X_DIR_HIGH_PIN);
+  xLow  = analogRead(X_DIR_LOW_PIN);
+  yHigh = analogRead(Y_DIR_HIGH_PIN);
+  yLow  = analogRead(Y_DIR_LOW_PIN);
+
+  //Check the FSR changes from previous reading and set the skip flag to true if the changes are below the change tolerance range
+  bool aboveDelta = abs(xHigh - g_xHighPrev) >= g_changeTolerance 
+                 || abs(xLow  - g_xLowPrev)  >= g_changeTolerance 
+                 || abs(yHigh - g_yHighPrev) >= g_changeTolerance 
+                 || abs(yLow  - g_yLowPrev)  >= g_changeTolerance;
+  
+    // Store FSR values for next skip check
+  g_xHighPrev = xHigh;
+  g_xLowPrev  = xLow;
+  g_yHighPrev = yHigh;
+  g_yLowPrev  = yLow;
+  
+  float xHighYHigh = sqrt(sq(((xHigh - g_xHighNeutral) > 0) ? (float)(xHigh - g_xHighNeutral) : 0.0) 
+           + sq(((yHigh - g_yHighNeutral) > 0) ? (float)(yHigh - g_yHighNeutral) : 0.0));     //The sq() function raises thr input to power of 2 and is returning the same data type int->int
+  float xHighYLow  = sqrt(sq(((xHigh - g_xHighNeutral) > 0) ? (float)(xHigh - g_xHighNeutral) : 0.0) 
+           + sq(((yLow - g_yLowNeutral) > 0) ? (float)(yLow - g_yLowNeutral) : 0.0));    //The sqrt() function raises input to power 1/2, returning a float type
+  float xLowYHigh  = sqrt(sq(((xLow - g_xLowNeutral) > 0) ? (float)(xLow - g_xLowNeutral) : 0.0) 
+                   + sq(((yHigh - g_yHighNeutral) > 0) ? (float)(yHigh - g_yHighNeutral) : 0.0));          //These are the vector magnitudes of each quadrant 1-4. Since the FSRs all register
+  float xLowYLow   = sqrt(sq(((xLow - g_xLowNeutral) > 0) ? (float)(xLow - g_xLowNeutral) : 0.0) 
+                   + sq(((yLow - g_yLowNeutral) > 0) ? (float)(yLow - g_yLowNeutral) : 0.0));         //a larger digital value with a positive application force, a large negative difference
+
+
+// Test if radial position is outside circular deadband
+ bool outsideDeadzone = (xHighYHigh > g_deadband) 
+                     || (xHighYLow  > g_deadband)
+                     || (xLowYLow   > g_deadband)
+                     || (xLowYHigh  > g_deadband);
+ 
+ // If joystick is moved, opposite FSR will decrease in force and therefore decrease in voltate
+ // (e.g. joystick unloaded->high resistance-> low voltage)
+ bool joystickLifted = (xHigh < JOYSTICK_LIFT_THRESOLD)
+                    || (xLow  < JOYSTICK_LIFT_THRESOLD) 
+                    || (yHigh < JOYSTICK_LIFT_THRESOLD) 
+                    || (yLow  < JOYSTICK_LIFT_THRESOLD);
+
+  //Check to see if the joystick has moved outside the deadband
+  if( outsideDeadzone && (aboveDelta || joystickLifted) )
+  {
+    g_pollCounter++;      //Add to the poll counter
+    
+    if( g_pollCounter >= 5) {
+      g_pollCounter = 0; // Reset poll counter to zero
+      outputJoystick = true;
+      //Map FSR values to (0 to 16 ) range 
+      g_xHighMapped=map(xHigh, g_xHighNeutral, g_xHighMax, 0, JOYSTICK_MAPPED_MAX);
+      g_xLowMapped=map(xLow, g_xLowNeutral, g_xLowMax, 0, JOYSTICK_MAPPED_MAX);
+      g_yHighMapped=map(yHigh, g_yHighNeutral, g_yHighMax, 0, JOYSTICK_MAPPED_MAX);
+      g_yLowMapped=map(yLow, g_yLowNeutral, g_yLowMax, 0, JOYSTICK_MAPPED_MAX);
+        
+      //Calculate the x and y delta values 
+      g_xDelta = g_xHighMapped - g_xLowMapped;                            
+      g_yDelta = g_yHighMapped - g_yLowMapped;   
+        
+      //Get the final X and Y output values for Joystick set axis function
+      xJoy = map(g_xDelta, -JOYSTICK_MAPPED_MAX, JOYSTICK_MAPPED_MAX, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);                   //Map back x and y range from (-128 to 128) as current bounds to (0 to 1023) as target bounds
+      yJoy = map(g_yDelta, -JOYSTICK_MAPPED_MAX, JOYSTICK_MAPPED_MAX, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);
+    
+      xJoy = constrain(xJoy, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);
+      yJoy = constrain(yJoy, -JOYSTICK_OUT_MAX, JOYSTICK_OUT_MAX);
+    }       
+ 
+  } //end check deadband 
+
+  return outputJoystick;
 }
 
-//***LED BLINK FUNCTIONS***//
 
-void ledBlink(int numBlinks, int delayBlinks, int ledNumber ) {
-  if (numBlinks < 0) numBlinks *= -1;
+//***ROTATE JOYSTICK FUNCTION ***//
+// Function   : rotateJoystick
+//
+// Description: This function applies a rotation to the two input coordinates using the global variable angles.
+//
+// Parameters : xJoy : int : the input x joystick value.
+//              yJoy : int : the input y joystick value.
+//
+// Return     : void
+//********************//
+void rotateJoystick(int &xJoy, int &yJoy)
+{
+  int uJoy = g_rotationAngle11 * xJoy + g_rotationAngle12 * yJoy;   // Apply rotation matrix to inputs
+  int vJoy = g_rotationAngle21 * xJoy + g_rotationAngle22 * yJoy;
 
-  switch (ledNumber) {
-    case 1: {
-        for (int i = 0; i < numBlinks; i++) {
-          digitalWrite(LED_1_PIN, HIGH);
-          delay(delayBlinks);
-          digitalWrite(LED_1_PIN, LOW);
-          delay(delayBlinks);
-        }
-        break;
-      }
-    case 2: {
-        for (int i = 0; i < numBlinks; i++) {
-          digitalWrite(LED_2_PIN, HIGH);
-          delay(delayBlinks);
-          digitalWrite(LED_2_PIN, LOW);
-          delay(delayBlinks);
-        }
-        break;
-      }
-    case 3: {
-        for (int i = 0; i < numBlinks; i++) {
-          digitalWrite(LED_1_PIN, HIGH);
-          delay(delayBlinks);
-          digitalWrite(LED_1_PIN, LOW);
-          delay(delayBlinks);
-          digitalWrite(LED_2_PIN, HIGH);
-          delay(delayBlinks);
-          digitalWrite(LED_2_PIN, LOW);
-          delay(delayBlinks);
-        }
-        break;
-      }
-  }
+  //Update inputs
+  xJoy = uJoy;
+  yJoy = vJoy;
 }
 
-//***OPERATION MODE NUMBER FUNCTIONS***//
-
-void operationModeValue(void) {
-  int var;
-  EEPROM.get(30, var);
-  delay(5);
-  operationMode = ((var == 0) || (var == 1)) ? var : 0;
-  delay(5);
-  EEPROM.put(30, operationMode);
-  delay(5);
+//***FIND SIGN OF VARIABLE FUNCTION***//
+// Function   : sgn
+//
+// Description: This function returns the sign of an integer.
+//
+// Parameters :  val : int : The integer to return it's sign.
+//
+// Return     : int8_t : The sign of the integer ( 1 ,or -1 )
+//*********************************//
+int8_t sgn(int val) {
+ if (val < 0) return -1;
+ if (val==0) return 0;
+ return 1;
 }
 
-//***READ THE SWITCH SPEED LEVEL FUNCTION***//
+//***SEND USB HID KEY FUNCTION ***//
+// Function   : sendKey
+//
+// Description: This function outputs USB key press and release actions.
+//
+// Parameters : key : byte : the output key.
+//
+// Return     : void
+//********************//
+void sendKey(byte key)
+{
+  Keyboard.write(key);     // Output mouse movement
+  delay(10);
+  Keyboard.releaseAll();
 
-void readSwitchSpeed(void) {
-  int var;
-  EEPROM.get(2, var);
-  delay(5);
-  if(var>0){
-    switchSpeedCounter = var;
-  } 
-  else {
-    EEPROM.put(2, switchSpeedCounter);
-    delay(5);
-  }
 }
 
-//***CALCULATE JOYSTICK DELAY FUNCTION***//
-
-void calculateSwitchDelay(void) {
-  switchDelay = pow(1.6,(11-switchSpeedCounter))*FIXED_DELAY;
-  delay(5);
-}
-
-//***INCREASE SWITCH SPEED FUNCTION***//
-
-void increaseSwitchSpeed(void) {
-  switchSpeedCounter++;
-
-  if (switchSpeedCounter == 11) {
-    ledBlink(6, 50, 3);
-    switchSpeedCounter = 10;
-  } else {
-    ledBlink(switchSpeedCounter+1, 100, 1);
-    switchDelay = pow(1.6,(11-switchSpeedCounter))*FIXED_DELAY;
-    EEPROM.put(2, switchSpeedCounter);
-    delay(25);
-  }
-  Serial.print("Speed level: ");
-  Serial.println(switchSpeedCounter+1);
-}
-
-//***DECREASE JOYSTICK SPEED FUNCTION***//
-
-void decreaseSwitchSpeed(void) {
-  switchSpeedCounter--;
-
-  if (switchSpeedCounter == -1) {
-    ledBlink(6, 50, 3);     // twelve very fast blinks
-    switchSpeedCounter = 0;
-  } else if (switchSpeedCounter == 0) {
-    ledBlink(1, 350, 1);
-    switchDelay = pow(1.6,(11-switchSpeedCounter))*FIXED_DELAY;
-    EEPROM.put(2, switchSpeedCounter);
-    delay(25);
-  } else {
-    ledBlink(switchSpeedCounter, 100, 1);
-    switchDelay = pow(1.6,(11-switchSpeedCounter))*FIXED_DELAY;
-    EEPROM.put(2, switchSpeedCounter);
-    delay(25);
-  }
-  Serial.print("Speed level: ");
-  Serial.println(switchSpeedCounter+1);
-}
-
-//***PRESSURE SENSOR INITIALIZATION FUNCTION***//
-
-void pressureSensorInitialization(void) {
-  float nominalPressure = (((float)analogRead(PRESSURE_PIN)) / 1024.0) * 5.0; // Initial neutral pressure transducer analog value [0.0V - 5.0V]
-
-  sipThreshold = nominalPressure + PRESSURE_THRESHOLD;          //Create sip pressure threshold value ***Larger values tend to minimize frequency of inadvertent activation
-
-  puffThreshold = nominalPressure - PRESSURE_THRESHOLD;         //Create puff pressure threshold value ***Larger values tend to minimize frequency of inadvertent activation
-}
-
-//***BLUETOOTH HID KEYBOARD FUNCTION***//
-
-void bluetoothKeyboardCommand(byte modifier,byte button) {
+//***SEND BLUETOOTH HID KEY FUNCTION***//
+// Function   : sendBluetoothKey
+//
+// Description: This function outputs Bluetooth key press and release actions.
+//
+// Parameters : key : byte : the output key.
+//
+// Return     : void
+//****************************************//
+void sendBluetoothKey(byte key) {
 
     byte modifierByte=(byte)0x00;
-    byte buttonByte=(byte)0x00;
-    byte bluetoothKeyboard[5];
+    byte keyByte=(byte)0x00;
+    byte bluetoothPacket[5];
 
-    buttonByte=button;
-    modifierByte=modifier;
+    keyByte=key;
 
-    bluetoothKeyboard[0] = 0xFE;
-    bluetoothKeyboard[1] = 0x3;
-    bluetoothKeyboard[2] = modifierByte;
-    bluetoothKeyboard[3] = buttonByte;
-    bluetoothKeyboard[4] = 0x0;
+    bluetoothPacket[0] = 0xFE;
+    bluetoothPacket[1] = 0x3;
+    bluetoothPacket[2] = modifierByte;
+    bluetoothPacket[3] = keyByte;
+    bluetoothPacket[4] = 0x0;
 
-    Serial1.write(bluetoothKeyboard,5);
+    Serial1.write(bluetoothPacket,5);
     Serial1.flush();
     delay(10);
-    bluetoothKeyboardClear();
+    clearBluetoothKey();
 
+    delay(BT_POLL_DELAY);
 }
 
 //***BLUETOOTH HID KEYBOARD CLEAR FUNCTION***//
+// Function   : clearBluetoothkey
+//
+// Description: This function outputs clear bluetooth keyboard action through Serial1.
+//
+// Parameters : void
+//
+// Return     : void
+//****************************************//
+void clearBluetoothKey(void) {
 
-void bluetoothKeyboardClear(void) {
+  byte bluetoothPacket[2];
 
-  byte bluetoothKeyboard[2];
+  bluetoothPacket[0] = 0xFD;
+  bluetoothPacket[1] = 0x00;
 
-  bluetoothKeyboard[0] = 0xFD;
-  bluetoothKeyboard[1] = 0x00;
-  Serial1.write(bluetoothKeyboard,2);
+  Serial1.write(bluetoothPacket, 2);
   Serial1.flush();
-  delay(10); 
-  
+  delay(BT_POLL_DELAY);
 }
 
-//----------------------RN-42 BLUETOOTH MODULE INITIALIZATION SECTION----------------------//
 
-//***BLUETOOTH CONFIGURATION STATUS FUNCTION***//
-
-void bluetoothConfigureStatus(void) {
-  int eepromVal;                                            // Local integer variable initialized and defined for use with EEPROM GET function
-  EEPROM.get(0, eepromVal);                                // Assign value of EEPROM memory at index zero (0) to int variable var
-  delay(10);
-  bluetoothConfigDone = (eepromVal == 1) ? eepromVal : 0;  //Define the bluetoothConfigDone to 0 if the device is set for the first time
-  delay(10);
-}
-
-//***BLUETOOTH CONFIGURATION FUNCTION***//
-
-void bluetoothConfigure(void) {
-    bluetoothConfigureStatus();                             //Check if Bluetooth has previously been configured
-    delay(10);
-    if ((bluetoothConfigDone == 0) || BT_CONFIG_FLAG) {     //If Bluetooth has not been configured or Bluetooth config flag is true then execute configuration sequence
-      bluetoothCommandMode();                               //Call Bluetooth command mode function to enter command mode
-      bluetoothConfigSequence();                            //Send configuarion data to Bluetooth module
-      delay(10);
-    } else {
-      Serial.println("Bluetooth configuration has previously been completed.");
-      delay(10);
-    }
-}
-//***BLUETOOTH CMD MODE FUNCTION***//
-
-void bluetoothCommandMode(void) {                 
+//***SET BLUETOOTH CMD MODE FUNCTION***//
+// Function   : setBluetoothCommandMode
+//
+// Description: This function sets/enters bluetooth command mode.
+//
+// Parameters : void
+//
+// Return     : void
+//****************************************//
+void setBluetoothCommandMode(void) {
   digitalWrite(TRANS_CONTROL_PIN, HIGH);            //Set the transistor base pin to HIGH to ensure Bluetooth module is off
   digitalWrite(PIO4_PIN, HIGH);                     //Set the command pin to high
   delay(10);
+
   digitalWrite(TRANS_CONTROL_PIN, LOW);             //Set the transistor base pin to LOW to power on Bluetooth module
   delay(10);
 
@@ -587,41 +715,2484 @@ void bluetoothCommandMode(void) {
   delay(10);
   Serial1.print("$$$");                             //Enter Bluetooth command mode
   delay(50);                                        //Add time delay to visual inspect the red LED is flashing at 10Hz which indicates the Bluetooth module is in Command Mode
-  Serial.println("Bluetooth CMD Mode Activated");
 }
 
 //***BLUETOOTH CONFIG FUNCTION***//
+// Function   : setBluetoothConfigSequence
+//
+// Description: This function performs bluetooth HID configuration sequence.
+//
+// Parameters : void
+//
+// Return     : void
+//****************************************//
+void setBluetoothConfigSequence(void) {
 
-void bluetoothConfigSequence(void) {
+  Serial1.println("ST,255");                        // Turn off the 60 sec timer for command mode
+  delay(15);
+  Serial1.println("SA,2");                          // Set Authentication Value to 2
+  delay(15);
+  Serial1.println("SX,0");                          // Set Bonding to 0 or disabled
+  delay(15);
+  Serial1.println("SN,LipSyncMacro");               // Set the name of BT module
+  delay(15);
+  Serial1.println("SM,6");                          // Set the Pairing mode to auto-connect mode : "SM,6"
+  delay(15);
+  Serial1.println("SH,0000");                       // Configure device as HID keyboard and keyboard combo
+  delay(15);
+  Serial1.println("S~,6");                          // Activate HID profile
+  delay(15);
+  Serial1.println("SQ,0");                          // Configure for latency NOT throughput : "SQ,0"
+  delay(15);
+  Serial1.println("S?,1");                          // Enable the role switch for better performance of high speed data
+  delay(15);
+  Serial1.println("R,1");                           // Reboot BT module
+  delay(15);
+  
+}
 
-  Serial1.println("ST,255");                        //Turn off the 60 sec timer for command mode
-  delay(15);
-  Serial1.println("SA,2");                          //Set Authentication Value to 2
-  delay(15);
-  Serial1.println("SX,0");                          //Set Bonding to 0 or disabled
-  delay(15);
-  Serial1.println("SN,LipSyncMacro");               //Set the name of BT module
-  delay(15);
-  Serial1.println("SM,6");                          //Set the Pairing mode to auto-connect mode : "SM,6"
-  delay(15);
-  Serial1.println("SH,0000");                       //Configure device as HID keyboard
-  delay(15);
-  Serial1.println("S~,6");                          //Activate HID profile
-  delay(15);
-  Serial1.println("SQ,0");                          //Configure for latency NOT throughput : "SQ,0"
-  delay(15);
-  Serial1.println("S?,1");                          //Enable the role switch -for better performance of high speed data
-  delay(15);
-  Serial1.println("R,1");                           //Reboot BT module
-  delay(15);
+//***SET BLUETOOTH SLEEP MODE FUNCTION***//
+// Function   : setBluetoothSleepMode
+//
+// Description: This function makes bluetooth module enter deep sleep mode.
+//
+// Parameters : void
+//
+// Return     : void
+//****************************************//
+void setBluetoothSleepMode(void) {
+  setBluetoothCommandMode();                        // Enter BT command mode
+  Serial1.println('Z');                             // Enter deep sleep mode (<2mA) when not connected
+  delay(10);
+}
 
-  int val0 = 1;
-  int val1 = switchSpeedCounter;
+//***GET COMMUNICATION MODE STATUS FUNCTION***//
+// Function   : getCommunicationMode
+//
+// Description: This function gets the LipSync current communication mode status.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+// Return     : mode : The current communication mode.
+//****************************************//
+int getCommunicationMode(bool responseEnabled, bool apiEnabled) {
+  int mode =0;
+  //Set communication mode based on physical pin status
+  if (digitalRead(MODE_SELECT_PIN) == LOW) {
+    mode = 0;                                   // Mode 0 is USB communication mode
+    setBluetoothSleepMode();
+    delay(5);
+  } else if (digitalRead(MODE_SELECT_PIN) == HIGH) {
+    mode = 1;                                   // Mode 1 is Bluetooth communication mode
+    delay(5);
+  }
 
-  //Save the default cursor counter value and configuration completed value at EEPROM. This action will happen once when a new device is configured 
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "CM,0", true, mode);
+  return mode;
+}
 
-  EEPROM.put(0, val0);                              //Save the configuration completed value at EEPROM address location 0
-  delay(15);
-  EEPROM.put(2, val1);                              //Save the default cursor speed counter value at EEPROM address location 2
-  delay(15);
+//***GET COMMUNICATION MODE STATUS FUNCTION***//
+// Function   : getCommunicationMode
+//
+// Description: This function is redefinition of main getCommunicationMode function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getCommunicationMode(bool responseEnabled, bool apiEnabled,int* optionalArray) 
+{
+  if (optionalArray[0] == 0)
+  {
+    getCommunicationMode(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET COMMUNICATION MODE STATUS FUNCTION***//
+// Function   : setCommunicationMode
+//
+// Description: This function sets the LipSync current communication mode status.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               mode : int : The communication method ( 0 = USB , 1 = Bluetooth )
+// Return     : void
+//****************************************//
+void setCommunicationMode(bool responseEnabled, bool apiEnabled,int mode) 
+{
+  bool isValidMode = true;
+  if(mode == 0 || mode == 1){
+    g_commMode = mode;
+    delay(10);
+    isValidMode = true;
+  } else {
+    isValidMode = false;
+  }
+
+  printResponseSingle(responseEnabled, apiEnabled, isValidMode, 0, "CM,1", true, mode);
+}
+
+//***SET COMMUNICATION MODE STATUS FUNCTION***//
+// Function   : setCommunicationMode
+//
+// Description: This function is redefinition of main setCommunicationMode function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void setCommunicationMode(bool responseEnabled, bool apiEnabled,int* optionalArray) 
+{
+  setCommunicationMode(responseEnabled, apiEnabled,optionalArray[0]);
+}
+
+
+//***GET BLUETOOTH CONFIGURATION STATUS FUNCTION***//
+// Function   : getBluetoothConfig
+//
+// Description: This function gets the LipSync current configuration number.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//****************************************//
+void getBluetoothConfig(bool responseEnabled, bool apiEnabled) {
+
+  int configNumber= BT_CONFIG_NUMBER;
+
+  EEPROM.get(EEPROM_configNumber, configNumber);
+  delay(EEPROM_WRITE_DELAY);
+
+  if (configNumber!=BT_CONFIG_NUMBER){
+    setBluetoothConfig(false,false, BT_CONFIG_NUMBER);
+    delay(5);
+    configNumber=BT_CONFIG_NUMBER;
+  }
+
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "BT,0", true, configNumber);
+}
+
+//***GET BLUETOOTH CONFIGURATION STATUS FUNCTION***//
+// Function   : getBluetoothConfig
+//
+// Description: This function is redefinition of main getBluetoothConfig function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getBluetoothConfig(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getBluetoothConfig(responseEnabled, apiEnabled);
+  }
+}
+
+//***SET BLUETOOTH CONFIGURATION FUNCTION***//
+// Function   : setBluetoothConfig
+//
+// Description: This function sets the LipSync current configuration number and configure the bluetooth module.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               configNumber : const int : The configuration number value.
+//
+// Return     : void
+void setBluetoothConfig(bool responseEnabled, bool apiEnabled, int configNumber) {
+  bool isValidConfigNumber = true;
+  if(configNumber==BT_CONFIG_NUMBER) {
+    setBluetoothCommandMode();                                // Call Bluetooth command mode function to enter command mode
+    setBluetoothConfigSequence();                             // Send configuarion data to Bluetooth module
+    delay(5);
+    isValidConfigNumber = true;
+    EEPROM.put(EEPROM_configNumber, BT_CONFIG_NUMBER);
+    delay(EEPROM_WRITE_DELAY);
+  } else {
+    isValidConfigNumber = false;
+  }
+  printResponseSingle(responseEnabled, apiEnabled, isValidConfigNumber, 0, "BT,1", true, configNumber);
+}
+
+//***SET BLUETOOTH CONFIGURATION FUNCTION***//
+// Function   : setBluetoothConfig
+//
+// Description: This function is redefinition of main setBluetoothConfig function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void setBluetoothConfig(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  setBluetoothConfig(responseEnabled, apiEnabled, optionalArray[0]);
+}
+
+
+
+//***GET MODEL NUMBER FUNCTION***//
+// Function   : getModelNumber
+//
+// Description: This function retrieves the current LipSync firmware model number.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getModelNumber(bool responseEnabled, bool apiEnabled)
+{
+  EEPROM.get(EEPROM_modelNumber, g_modelNumber);        // Retrieve model number from EEPROM
+  EEPROM.get(EEPROM_versionNumber, g_versionNumber);    // Retrieve version number from EEPROM
+
+  if (g_modelNumber != LIPSYNC_MODEL)
+  { // If the previous firmware was different model then factory reset the settings
+    factoryReset(responseEnabled, apiEnabled, 0);
+
+    g_modelNumber = LIPSYNC_MODEL;                      // And store the model number in EEPROM
+    EEPROM.put(EEPROM_modelNumber, g_modelNumber);
+    delay(EEPROM_WRITE_DELAY);
+  }
+  else if (g_versionNumber != LIPSYNC_VERSION)
+  { // If the previous firmware was same model but different version then soft reset the settings
+    factoryReset(responseEnabled, apiEnabled, 1);
+
+    g_versionNumber = LIPSYNC_VERSION;                  // And store the version number in EEPROM
+    EEPROM.put(EEPROM_versionNumber, g_versionNumber);
+    delay(EEPROM_WRITE_DELAY);
+  }
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "MN,0", true, LIPSYNC_MODEL);
+}
+
+
+//***GET MODEL NUMBER API FUNCTION***//
+// Function   : getModelNumber
+//
+// Description: This function is redefinition of main getModelNumber function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getModelNumber(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getModelNumber(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***GET VERSION FUNCTION***//
+// Function   : getVersionNumber
+//
+// Description: This function retrieves the current LipSync firmware version number.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getVersionNumber(bool responseEnabled, bool apiEnabled)
+{
+  EEPROM.get(EEPROM_versionNumber, g_versionNumber);
+  if (g_versionNumber != LIPSYNC_VERSION)
+  { //If the previous firmware was different model then factory reset the settings
+    g_versionNumber = LIPSYNC_VERSION;                               //And store the model number in EEPROM
+    EEPROM.put(EEPROM_versionNumber, g_versionNumber);
+    delay(EEPROM_WRITE_DELAY);
+  }
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "VN,0", true, LIPSYNC_VERSION);
+}
+
+
+//***GET VERSION API FUNCTION***//
+// Function   : getVersionNumber
+//
+// Description: This function is redefinition of main getVersionNumber function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getVersionNumber(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getVersionNumber(responseEnabled, apiEnabled);
+  }
+}
+
+//***GET JOYSTICK SENSITIVITY FUNCTION***//
+// Function   : getJoystickSensitivity
+//
+// Description: This function retrieves the current joystick sensitivity level.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+int getJoystickSensitivity(bool responseEnabled, bool apiEnabled)
+{
+  int sensitivityCounter = SENSITIVITY_COUNTER;
+  if (API_ENABLED)
+  {
+    EEPROM.get(EEPROM_sensitivityCounter, sensitivityCounter);
+    if (sensitivityCounter < 0 || sensitivityCounter > 10)
+    {
+      sensitivityCounter = SENSITIVITY_COUNTER;
+      EEPROM.put(EEPROM_sensitivityCounter, sensitivityCounter);
+      delay(EEPROM_WRITE_DELAY);
+    }
+  }
+  printResponseSingle(responseEnabled,
+                        apiEnabled,
+                        true, // TODO Add comment for magic argument
+                        0, // TODO Add comment for magic argument
+                        "SS,0",
+                        true, // TODO Add comment for magic argument
+                        sensitivityCounter);
+  return sensitivityCounter;
+}
+
+
+//***GET JOYSTICK SENSITIVITY API FUNCTION***//
+// Function   : getJoystickSensitivity
+//
+// Description: This function is redefinition of main getJoystickSensitivity function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getJoystickSensitivity(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getJoystickSensitivity(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET JOYSTICK SENSITIVITY FUNCTION***//
+// Function   : setJoystickSensitivity
+//
+// Description: This function sets the current joystick sensitivity level.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputSensitivityCounter : bool : The new sensitivity level.
+//
+// Return     : void
+//*********************************//
+void setJoystickSensitivity(bool responseEnabled, bool apiEnabled, int inputSensitivityCounter)
+{
+  bool isValidSpeed = true;
+  if (inputSensitivityCounter >= 0 && inputSensitivityCounter <= 10)  // Check if inputSpeedCounter is valid
+  { 
+  // Valid inputSensitivityCounter
+    ledBlink(inputSensitivityCounter + 1, 100, 1);
+    g_sensitivityCounter = inputSensitivityCounter;
+    EEPROM.put(EEPROM_sensitivityCounter, g_sensitivityCounter);
+    delay(EEPROM_WRITE_DELAY);
+  
+    if(!API_ENABLED){ g_sensitivityCounter = SENSITIVITY_COUNTER; }
+    isValidSpeed = true;
+  }
+  else
+  { // Invalid inputSensitivityCounter
+    ledBlink(6, 50, 3);
+    EEPROM.get(EEPROM_sensitivityCounter, g_sensitivityCounter);
+    isValidSpeed = false;
+  }
+
+  updateJoystickSensitivity(g_sensitivityCounter);
+  
+  byte responseCode = 0;
+  (isValidSpeed) ? responseCode = 0 : responseCode = 3;
+  printResponseSingle(responseEnabled,
+                      apiEnabled,
+                      isValidSpeed,
+                      responseCode,
+                      "SS,1",
+                      true, // TODO Comment magic argument
+                      g_sensitivityCounter);
+  delay(5);
+}
+
+
+//***SET JOYSTICK SENSITIVITY API FUNCTION***//
+// Function   : setJoystickSensitivity
+//
+// Description: This function is redefinition of main setJoystickSensitivity function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputSpeedCounter : int* : The array of one element which contains the new sensitivity level.
+//
+// Return     : void
+void setJoystickSensitivity(bool responseEnabled, bool apiEnabled, int* inputSpeedCounter)
+{
+  setJoystickSensitivity(responseEnabled, apiEnabled, inputSpeedCounter[0]);
+}
+
+//***UPDATE JOYSTICK SENSITIVITY VALUE API FUNCTION***//
+// Function   : updateJoystickSensitivity
+//
+// Description: This function updates the joystick sensitivity value.
+//
+// Parameters :  sensitivityLevel : byte : The current joystick sensitivity level.
+//                                  
+//
+// Return     : void
+void updateJoystickSensitivity(byte sensitivityLevel)
+{
+  if(sensitivityLevel == 0)
+  {
+    g_sensitivityValue = JOYSTICK_OUT_MAX - 1;
+  } 
+  else 
+  {
+    g_sensitivityValue = JOYSTICK_OUT_MAX - sensitivityLevel;
+  }
+}
+
+//***INCREASE JOYSTICK SENSITIVITY LEVEL FUNCTION***//
+// Function   : increaseJoystickSensitivity
+//
+// Description: This function increases the joystick sensitivity level by one.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void increaseJoystickSensitivity(bool responseEnabled, bool apiEnabled)
+{
+  g_sensitivityCounter++;
+  setJoystickSensitivity(responseEnabled, apiEnabled, g_sensitivityCounter);
+  delay(5);
+}
+
+
+//***DECREASE JOYSTICK SENSITIVITY LEVEL FUNCTION***//
+// Function   : decreaseJoystickSensitivity
+//
+// Description: This function decreases the joystick sensitivity level by one.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void decreaseJoystickSensitivity(bool responseEnabled, bool apiEnabled)
+{
+  g_sensitivityCounter--;
+  setJoystickSensitivity(responseEnabled, apiEnabled, g_sensitivityCounter);
+  delay(5);
+}
+
+
+//***READ PRESSURE***//
+// Function   : readPressure
+//
+// Description: This function returns a single pressure sensor value in volts
+//
+// Parameters :  void
+//
+// Return     : int : The pressure sensor value in ADC steps
+//*********************************//
+// This function returns a single pressure sensor value in volts
+float readPressure(void)
+{
+  return analogRead(PRESSURE_PIN);
+}
+
+
+//***GET PUFF THRESHOLD FUNCTION***//
+// Function   : getPuffThreshold
+//
+// Description: This function returns the current puff pressure threshold in percentage and the nominal pressure [0.0V - 5.0V] multiplied by 100.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getPuffThreshold(bool responseEnabled, bool apiEnabled)
+{
+  int pressureNominal = readPressure();
+  int puffThreshold = PUFF_PRESSURE_THRESHOLD_DEFAULT;
+
+  if (API_ENABLED)
+  {
+    EEPROM.get(EEPROM_puffThreshold, puffThreshold);
+    if (puffThreshold <= PUFF_PRESSURE_THRESHOLD_MIN || puffThreshold > PUFF_PRESSURE_THRESHOLD_MAX)
+    {
+      EEPROM.put(EEPROM_puffThreshold, PUFF_PRESSURE_THRESHOLD_DEFAULT);
+      delay(EEPROM_WRITE_DELAY);
+      puffThreshold = PUFF_PRESSURE_THRESHOLD_DEFAULT;
+    }
+  }
+
+  // Create puff pressure threshold value
+  g_puffThreshold = pressureNominal - (puffThreshold / 100.0 * 1023);
+
+  int pressureValue[] = { puffThreshold, pressureNominal };
+
+  printResponseMultiple(responseEnabled,
+                        apiEnabled,
+                        true, // TODO Comment magic argument
+                        0, // TODO Comment magic argument
+                        "PT,0",
+                        2, // Number of values in pressureValue
+                        ':', // Delimiter
+                        pressureValue);
+}
+
+
+//***GET PUFF THRESHOLD API FUNCTION***//
+// Function   : getPuffThreshold
+//
+// Description: This function is redefinition of main getPuffThreshold function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getPuffThreshold(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getPuffThreshold(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET PUFF THRESHOLD FUNCTION***//
+// Function   : setPuffThreshold
+//
+// Description: This function sets the current puff pressure threshold in percentage.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputPuffThreshold : bool : The new puff pressure threshold in percentage.
+//
+// Return     : void
+//*********************************//
+void setPuffThreshold(bool responseEnabled, bool apiEnabled, int inputPuffThreshold)
+{
+  bool isValidThreshold = true;
+  int puffThreshold = inputPuffThreshold;
+  int pressureNominal = readPressure(); // Read neutral pressure transducer analog value [0-1023]
+
+  if ( (puffThreshold >= PUFF_PRESSURE_THRESHOLD_MIN)
+       && puffThreshold <= PUFF_PRESSURE_THRESHOLD_MAX)
+  {
+    isValidThreshold = true;
+    EEPROM.put(EEPROM_puffThreshold, puffThreshold); // Update value to memory from serial input
+    delay(EEPROM_WRITE_DELAY);
+
+    if (!API_ENABLED)
+    {
+      puffThreshold = PUFF_PRESSURE_THRESHOLD_DEFAULT; // If the API is disabled, use the default value from the code
+    }
+    // Update sip and puff pressure threshold variables
+    // Larger values tend to minimize frequency of inadvertent activation
+    g_puffThreshold = pressureNominal - (puffThreshold / 100.0 * 1023);
+  }
+  else
+  {
+    EEPROM.get(EEPROM_puffThreshold, puffThreshold);
+    isValidThreshold = false;
+  }
+
+  int pressureValue[] = { puffThreshold, pressureNominal };
+  int responseCode = 0;
+  (isValidThreshold) ? responseCode = 0 : responseCode = 3;
+  printResponseMultiple(responseEnabled,
+                        apiEnabled,
+                        isValidThreshold,
+                        responseCode,
+                        "PT,1",
+                        2, // TODO Comment magic argument
+                        ':', // TODO Comment magic argument
+                        pressureValue);
+  delay(5);
+}
+
+
+//***SET PUFF THRESHOLD API FUNCTION***//
+// Function   : setPuffThreshold
+//
+// Description: This function is redefinition of main setPuffThreshold function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputPuffThreshold : int* : The array of one element which contains the new pressure threshold.
+//
+// Return     : void
+void setPuffThreshold(bool responseEnabled, bool apiEnabled, int* inputPuffThreshold)
+{
+  setPuffThreshold(responseEnabled, apiEnabled, inputPuffThreshold[0]);
+}
+
+
+
+//***GET SIP THRESHOLD FUNCTION***//
+// Function   : getSipThreshold
+//
+// Description: This function returns the current sip pressure threshold in percentage and the nominal pressure.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getSipThreshold(bool responseEnabled, bool apiEnabled)
+{
+  int pressureNominal = readPressure();
+  int sipThreshold = SIP_PRESSURE_THRESHOLD_DEFAULT;
+
+  if (API_ENABLED)
+  {
+    EEPROM.get(EEPROM_sipThreshold, sipThreshold);
+    delay(EEPROM_WRITE_DELAY);
+    if (sipThreshold <= SIP_PRESSURE_THRESHOLD_MIN || sipThreshold > SIP_PRESSURE_THRESHOLD_MAX)
+    {
+      EEPROM.put(EEPROM_sipThreshold, SIP_PRESSURE_THRESHOLD_DEFAULT);
+      delay(EEPROM_WRITE_DELAY);
+      sipThreshold = SIP_PRESSURE_THRESHOLD_DEFAULT;
+    }
+  }
+
+  // Create sip pressure threshold value ***Larger values tend to minimize frequency of inadvertent activation
+  g_sipThreshold =  pressureNominal + (sipThreshold  / 100.0 * 1023);
+
+  int pressureValue[] = { sipThreshold, pressureNominal };
+
+  printResponseMultiple(responseEnabled,
+                        apiEnabled,
+                        true, // TODO Comment magic argument
+                        0, // TODO Comment magic argument
+                        "ST,0",
+                        2, // TODO Comment magic argument
+                        ':', // TODO Comment magic argument
+                        pressureValue);
+}
+
+
+//***GET SIP THRESHOLD API FUNCTION***//
+// Function   : getSipThreshold
+//
+// Description: This function is redefinition of main getSipThreshold function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getSipThreshold(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getSipThreshold(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET SIP THRESHOLD FUNCTION***//
+// Function   : setSipThreshold
+//
+// Description: This function sets the current sip pressure threshold in percentage.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputSipThreshold : bool : The new pressure threshold in percentage.
+//
+// Return     : void
+//*********************************//
+void setSipThreshold(bool responseEnabled, bool apiEnabled, int inputSipThreshold)
+{
+  bool isValidThreshold;
+  int sipThreshold = inputSipThreshold;
+  int pressureNominal = readPressure(); // Read neutral pressure transducer analog value 
+
+  if ( (sipThreshold >= SIP_PRESSURE_THRESHOLD_MIN)
+       && sipThreshold <= SIP_PRESSURE_THRESHOLD_MAX)
+  {
+    isValidThreshold = true;
+    EEPROM.put(EEPROM_sipThreshold, sipThreshold); // Update value to memory from serial input
+    delay(EEPROM_WRITE_DELAY);
+
+    if (!API_ENABLED)
+    {
+      sipThreshold = SIP_PRESSURE_THRESHOLD_DEFAULT; // If the API is disabled, use the default value from the code
+    }
+    // Update sip and puff pressure threshold variables
+    g_sipThreshold  = pressureNominal + (sipThreshold  / 100.0 * 1023);
+
+  }
+  else
+  {
+    isValidThreshold = false;
+    EEPROM.get(EEPROM_sipThreshold, sipThreshold);
+  }
+
+  int pressureValue[] = { sipThreshold, pressureNominal };
+  int responseCode = 0;
+  (isValidThreshold) ? responseCode = 0 : responseCode = 3;
+  printResponseMultiple(responseEnabled,
+                        apiEnabled,
+                        isValidThreshold,
+                        responseCode,
+                        "ST,1",
+                        2, // TODO Comment magic argument
+                        ':', // TODO Comment magic argument
+                        pressureValue);
+}
+
+
+//***SET PRESSURE THRESHOLD API FUNCTION***//
+// Function   : setPressureThreshold
+//
+// Description: This function is redefinition of main setPressureThreshold function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputPressureThreshold : int* : The array of one element which contains the new pressure threshold.
+//
+// Return     : void
+void setSipThreshold(bool responseEnabled, bool apiEnabled, int* inputSipThreshold)
+{
+  setSipThreshold(responseEnabled, apiEnabled, inputSipThreshold[0]);
+}
+
+
+//***GET PRESSURE VALUE FUNCTION***//
+// Function   : getPressureValue
+//
+// Description: This function returns pressure value in steps [0-1023].
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getPressureValue(bool responseEnabled, bool apiEnabled)
+{
+  int tempPressureValue = readPressure();
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "PV,0", true, tempPressureValue);
+}
+
+
+//***GET PRESSURE VALUE API FUNCTION***//
+// Function   : getPressureValue
+//
+// Description: This function is redefinition of main getPressureValue function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getPressureValue(bool responseEnabled, bool apiEnabled, int* optionalArray) {
+  if (optionalArray[0] == 0)
+  {
+    getPressureValue(responseEnabled, apiEnabled);
+  }
+}
+
+//***GET JOYSTICK VALUE FUNCTION***//
+// Function   : getJoystickValue
+//
+// Description: This function returns a set of single FSR measurements.
+//              Output format: "JV,0:xHigh,xLow,yHigh,yLow"
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getJoystickValue(bool responseEnabled, bool apiEnabled)
+{
+  int xHighTemp = analogRead(X_DIR_HIGH_PIN);             // Read analog values of FSR's : A0
+  int xLowTemp  = analogRead(X_DIR_LOW_PIN);              // Read analog values of FSR's : A1
+  int yHighTemp = analogRead(Y_DIR_HIGH_PIN);             // Read analog values of FSR's : A0
+  int yLowTemp  = analogRead(Y_DIR_LOW_PIN);              // Read analog values of FSR's : A10
+
+  int joystickTempValue[] = { xHighTemp, xLowTemp, yHighTemp, yLowTemp };
+  printResponseMultiple(responseEnabled,
+                        apiEnabled,
+                        true, // TODO Comment magic argument
+                        0, // TODO Comment magic argument
+                        "JV,0", // Command
+                        4, // 4 output variables
+                        ',', // Delimiter between output variables
+                        joystickTempValue);
+}
+
+
+//***GET JOYSTICK VALUE API FUNCTION***//
+// Function   : getJoystickValue
+//
+// Description: This function is redefinition of main getJoystickValue function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getJoystickValue(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getJoystickValue(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***GET DEBUG MODE STATE FUNCTION***//
+// Function   : getDebugMode
+//
+// Description: This function retrieves the state of debug mode.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : debugState : bool : The current state of debug mode.
+//*********************************//
+bool getDebugMode(bool responseEnabled, bool apiEnabled)
+{
+  bool debugState = DEBUG_MODE;
+  int debugIntValue;
+  if (API_ENABLED)
+  {
+    EEPROM.get(EEPROM_debugModeEnabled, debugIntValue);
+    if (debugIntValue != 0 && debugIntValue != 1) // TODO Comment magic argument
+    {
+      EEPROM.put(EEPROM_debugModeEnabled, DEBUG_MODE);
+      delay(EEPROM_WRITE_DELAY);
+      debugState = DEBUG_MODE;
+    }
+  }
+  else
+  {
+    debugState = DEBUG_MODE;
+  }
+
+  printResponseSingle(responseEnabled,
+                      apiEnabled,
+                      true, // TODO Comment magic argument
+                      0, // TODO Comment magic argument
+                      "DM,0",
+                      true,// TODO Comment magic argument
+                      debugState);
+            
+  if(responseEnabled && debugState==1){ sendDebugConfigData();}
+
+  return debugState;
+}
+
+
+//***GET DEBUG MODE STATE API FUNCTION***//
+// Function   : getDebugMode
+//
+// Description: This function is redefinition of main getDebugMode function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getDebugMode(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getDebugMode(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET DEBUG MODE STATE FUNCTION***//
+// Function   : setDebugMode
+//
+// Description: This function sets the state of debug mode.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inpuDebugState : int : The new debug mode state ( true = ON , false = OFF )
+//
+// Return     : void
+//*********************************//
+void setDebugMode(bool responseEnabled, bool apiEnabled, int inpuDebugState)
+{
+  bool isValidDebugState = true; // TODO Should this default to false?
+  if (inpuDebugState == 0 || inpuDebugState == 1)
+  {
+    g_debugModeEnabled = inpuDebugState;
+    EEPROM.put(EEPROM_debugModeEnabled, g_debugModeEnabled);
+    delay(EEPROM_WRITE_DELAY);
+  
+    if (!API_ENABLED)
+    {
+      g_debugModeEnabled = DEBUG_MODE;
+    }
+  
+  isValidDebugState = true;
+  }
+  else
+  {
+    isValidDebugState = false;
+  }
+  delay(5);
+
+  int responseCode = 0;
+  (isValidDebugState) ? responseCode = 0 : responseCode = 3;
+
+  printResponseSingle(responseEnabled,
+                      apiEnabled,
+                      isValidDebugState,
+                      responseCode,
+                      "DM,1",
+                      true, // TODO Comment magic argument
+                      g_debugModeEnabled);
+
+  if(inpuDebugState==1) { sendDebugConfigData();    }
+}
+
+
+//***SET DEBUG MODE STATE API FUNCTION***//
+// Function   : setDebugMode
+//
+// Description: This function is redefinition of main setDebugMode function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inpuDebugState : int* : The array of one element which contains the new debug mode state.
+//
+// Return     : void
+void setDebugMode(bool responseEnabled, bool apiEnabled, int* inpuDebugState)
+{
+  setDebugMode(responseEnabled, apiEnabled, inpuDebugState[0]);
+}
+
+
+//***SEND DEBUG DATA FUNCTION***//
+// Function   : sendDebugConfigData
+//
+// Description: This function serial prints the debug mode config data.
+//              Output format: "LOG:1:0,0,0,xHighNeutral,xLowNeutral,yHighNeutral,yLowNeutral"
+//              Output format: "LOG:2:0,0,0,xHighMax,xLowMax,yHighMax,yLowMax"
+//
+// Parameters :  void
+//
+// Return     : void
+//*********************************//
+void sendDebugConfigData() {
+  
+  int neutralValue[] = {0, 0, 0, g_xHighNeutral, g_xLowNeutral, g_yHighNeutral, g_yLowNeutral};
+  int maxValue[] = {0, 0, 0, g_xHighMax, g_xLowMax, g_yHighMax, g_yLowMax};
+
+  delay(100); // TODO This seems like a super long delay.
+  printResponseContinuous("LOG", 1, 7, ',', neutralValue);
+  delay(100);
+  printResponseContinuous("LOG", 2, 7, ',', maxValue);
+  delay(100);
+}
+
+
+//***SEND DEBUG RAW DATA FUNCTION***//
+// Function   : sendDebugRawData
+//
+// Description: This function serial prints the debug mode raw data.
+//              Output format: "LOG:3:xJoy,yJoy,dJoy,xUp,xDown,yUp,yDown"
+//
+// Parameters :  x : int : The joystick x movement.
+//               y : int : The joystick y movement.
+//               action : int : The sip and puff actions.
+//               xUp : int : The xUp FSR value.
+//               xDown : int : The xDown FSR value.
+//               yUp : int : The yUp FSR value.
+//               yDown : int : The yDown FSR value.
+//
+// Return     : void
+//*********************************//
+void sendDebugRawData(int x, int y, int action, int xUp, int xDown, int yUp, int yDown)
+{
+  int rawDataValue[] = {x, y, action, xUp, xDown, yUp, yDown};
+  printResponseContinuous("LOG", 3, 7, ',', rawDataValue);
+}
+
+
+//***GET JOYSTICK INITIALIZATION FUNCTION***//
+/// Function   : getJoystickInitialization
+//
+// Description: This function retrieves the FSR Neutral values from joystick Initialization.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getJoystickInitialization(bool responseEnabled, bool apiEnabled)
+{
+  int neutralValue[] = {g_xHighNeutral, g_xLowNeutral, g_yHighNeutral, g_yLowNeutral};
+
+  printResponseMultiple(responseEnabled,
+                        apiEnabled,
+                        true, //TODO Comment magic argument
+                        0, //TODO Comment magic argument
+                        "IN,0",
+                        4, //TODO Comment magic argument
+                        ',', //TODO Comment magic argument
+                        neutralValue);
+}
+
+
+//***GET JOYSTICK INITIALIZATION API FUNCTION***//
+// Function   : getJoystickInitialization
+//
+// Description: This function is redefinition of main getJoystickInitialization function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getJoystickInitialization(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getJoystickInitialization(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET JOYSTICK INITIALIZATION FUNCTION***//
+/// Function   : setJoystickInitialization
+//
+// Description: This function performs joystick Initialization.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void setJoystickInitialization(bool responseEnabled, bool apiEnabled)
+{
+  ledOn(1); //Turn on Green LED
+
+  int xHigh = analogRead(X_DIR_HIGH_PIN);               // Set the initial neutral x-high value of joystick
+  int xLow  = analogRead(X_DIR_LOW_PIN);                // Set the initial neutral x-low value of joystick
+  int yHigh = analogRead(Y_DIR_HIGH_PIN);               // Set the initial neutral y-high value of joystick
+  int yLow  = analogRead(Y_DIR_LOW_PIN);                // Set the initial Initial neutral y-low value of joystick
+
+  //Set the neutral values and change detection
+  g_xHighPrev = g_xHighNeutral = xHigh;
+  g_xLowPrev  = g_xLowNeutral  = xLow;
+  g_yHighPrev = g_yHighNeutral = yHigh;
+  g_yLowPrev  = g_yLowNeutral  = yLow;
+
+  int neutralValue[] = {g_xHighNeutral, g_xLowNeutral, g_yHighNeutral, g_yLowNeutral};
+
+  printResponseMultiple(responseEnabled,
+                        apiEnabled,
+                        true,//TODO Comment magic argument
+                        0, //TODO Comment magic argument
+                        "IN,1",
+                        4,//TODO Comment magic argument
+                        ',',//TODO Comment magic argument
+                        neutralValue);
+  ledClear();
+}
+
+
+//***SET JOYSTICK INITIALIZATION API FUNCTION***//
+// Function   : setJoystickInitialization
+//
+// Description: This function is redefinition of main setJoystickInitialization function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               mode : int* : The array of one element which contains the initialization mode.
+//
+// Return     : void
+void setJoystickInitialization(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 1)
+  {
+  setJoystickInitialization(responseEnabled, apiEnabled);
+  }
+}
+
+//*** GET JOYSTICK CALIBRATION FUNCTION***//
+/// Function   : getJoystickCalibration
+//
+// Description: This function retrieves FSR maximum values from joystick Calibration.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getJoystickCalibration(bool responseEnable, bool apiEnabled)
+{
+  // Get the max values from Memory
+  EEPROM.get(EEPROM_xHighMax, g_xHighMax);
+  EEPROM.get(EEPROM_xLowMax,  g_xLowMax);
+  EEPROM.get(EEPROM_yHighMax, g_yHighMax);
+  EEPROM.get(EEPROM_yLowMax,  g_yLowMax);
+
+  int maxValue[] = { g_xHighMax, g_xLowMax, g_yHighMax, g_yLowMax };
+
+  printResponseMultiple(responseEnable,
+                        apiEnabled,
+                        true, //TODO Comment magic argument
+                        0, 
+                        "CA,0", // Command code, get
+                        4, // Number of output arguments
+                        ',', // Delimiter
+                        maxValue);
+}
+
+
+//***GET JOYSTICK CALIBRATION API FUNCTION***//
+// Function   : getJoystickCalibration
+//
+// Description: This function is redefinition of main getJoystickCalibration function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getJoystickCalibration(responseEnabled, apiEnabled);
+  }
+}
+
+
+//*** SET JOYSTICK CALIBRATION FUNCTION***//
+/// Function   : getJoystickCalibration
+//
+// Description: This function starts the joystick Calibration.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void setJoystickCalibration(bool responseEnabled, bool apiEnabled)
+{
+  ledClear();
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "CA,1", true, 0);
+
+  ledBlink(4, 300, 3);
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "CA,1", true, 1);
+
+  ledBlink(6, 500, 1);
+  g_yHighMax = analogRead(Y_DIR_HIGH_PIN);
+  ledBlink(1, 1000, 2);
+
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "CA,1", true, 2);
+
+  ledBlink(6, 500, 1);
+  g_xHighMax = analogRead(X_DIR_HIGH_PIN);
+  ledBlink(1, 1000, 2);
+
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "CA,1", true, 3);
+
+  ledBlink(6, 500, 1);
+  g_yLowMax = analogRead(Y_DIR_LOW_PIN);
+  ledBlink(1, 1000, 2);
+
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "CA,1", true, 4);
+
+  ledBlink(6, 500, 1);
+  g_xLowMax = analogRead(X_DIR_LOW_PIN);
+  ledBlink(1, 1000, 2);
+
+  EEPROM.put(EEPROM_xHighMax, g_xHighMax);
+  delay(EEPROM_WRITE_DELAY);
+  EEPROM.put(EEPROM_xLowMax,  g_xLowMax);
+  delay(EEPROM_WRITE_DELAY);
+  EEPROM.put(EEPROM_yHighMax, g_yHighMax);
+  delay(EEPROM_WRITE_DELAY);
+  EEPROM.put(EEPROM_yLowMax,  g_yLowMax);
+  delay(EEPROM_WRITE_DELAY);
+
+  ledBlink(5, 250, 3);
+  
+  int maxValue[] = { g_xHighMax, g_xLowMax, g_yHighMax, g_yLowMax };
+  printResponseMultiple(responseEnabled, 
+            apiEnabled, 
+            true, 
+            0, 
+            "CA,1:5", 
+            4, 
+            ',', 
+            maxValue);
+}
+
+
+//***SET JOYSTICK CALIBRATION API FUNCTION***//
+// Function   : setJoystickCalibration
+//
+// Description: This function is redefinition of main setJoystickCalibration function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void setJoystickCalibration(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 1)
+  {
+    setJoystickCalibration(responseEnabled, apiEnabled);
+  }
+}
+
+
+//*** GET CHANGE TOLERANCE VALUE CALIBRATION FUNCTION***//
+/// Function   : getChangeTolerance
+//
+// Description: This function retrieves the current change tolerance.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : tempChangeTolerance : int : The current change tolerance.
+//*********************************//
+int getChangeTolerance(bool responseEnabled, bool apiEnabled)
+{
+  int tempChangeTolerance = CHANGE_DEFAULT_TOLERANCE;
+
+  if (API_ENABLED)
+  {
+    //Get the change tolerance from memory
+    EEPROM.get(EEPROM_changeTolerance, tempChangeTolerance);
+  }
+  else
+  {
+    tempChangeTolerance = CHANGE_DEFAULT_TOLERANCE;
+  }
+  printResponseSingle(responseEnabled, apiEnabled, true, 0, "CT,0", true, tempChangeTolerance);
+  return tempChangeTolerance;
+}
+
+
+//***GET CHANGE TOLERANCE VALUE CALIBRATION API FUNCTION***//
+// Function   : getChangeTolerance
+//
+// Description: This function is redefinition of main getChangeTolerance function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getChangeTolerance(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getChangeTolerance(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET CHANGE TOLERANCE VALUE CALIBRATION FUNCTION***///
+// Function   : setChangeTolerance
+//
+// Description: This function sets a new change tolerance [ 0 - 30 ].
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputChangeTolerance : int : The input change tolerance requested.
+//
+// Return     : void
+//*********************************//
+void setChangeTolerance(bool responseEnabled, bool apiEnabled, int inputChangeTolerance)
+{
+  bool isValidChangeTolerance = true;
+
+  if (inputChangeTolerance >= 0 && inputChangeTolerance <= JOYSTICK_DEADBAND)
+  {
+    g_changeTolerance = inputChangeTolerance;                           // Update value to global variable
+    EEPROM.put(EEPROM_changeTolerance, g_changeTolerance);              // Update value to memory from serial input
+    delay(EEPROM_WRITE_DELAY);
+    if(!API_ENABLED) {g_changeTolerance = CHANGE_DEFAULT_TOLERANCE; }   //Use default change tolerance if bad serial input
+    isValidChangeTolerance = true;
+  }
+  else
+  {
+    isValidChangeTolerance = false;
+  }
+  delay(5);
+  int responseCode = 0; // TODO change to byte?
+  (isValidChangeTolerance) ? responseCode = 0 : responseCode = 3;
+  printResponseSingle(responseEnabled,
+            apiEnabled, 
+            isValidChangeTolerance, 
+            responseCode, 
+            "CT,1", 
+            true, 
+            g_changeTolerance);
+}
+
+
+//***SET CHANGE TOLERANCE VALUE CALIBRATION API FUNCTION***//
+// Function   : setChangeTolerance
+//
+// Description: This function is redefinition of main setChangeTolerance function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputChangeTolerance : int* : The array of one element which contains the new change tolerance value.
+//
+// Return     : void
+void setChangeTolerance(bool responseEnabled, bool apiEnabled, int* inputChangeTolerance)
+{
+  setChangeTolerance(responseEnabled, apiEnabled, inputChangeTolerance[0]);
+}
+
+//***GET BUTTON MAPPING FUNCTION***//
+// Function   : getButtonMapping
+//
+// Description: This function retrieves a new input button action mapping.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : void
+//*********************************//
+void getButtonMapping(bool responseEnabled, bool apiEnabled)
+{
+  bool isValidMapping = true;
+  if (API_ENABLED)
+  {
+    for (byte i = 0; i < INPUT_ACTION_COUNT; i++)
+    { // Check if it's a valid mapping
+      int buttonMapping;
+      EEPROM.get(EEPROM_buttonMapping1 + i * 2, buttonMapping);
+      if (buttonMapping < 0 || buttonMapping > 8)
+      {
+        isValidMapping = false;
+        break;
+      }
+      else
+      {
+        g_actionButton[i] = buttonMapping;
+      }
+    }
+    if (!isValidMapping)
+    {
+      for (byte i = 0; i < INPUT_ACTION_COUNT; i++)
+      { // Save the default mapping into EEPROM if it's not a valid mapping
+        EEPROM.put(EEPROM_buttonMapping1 + i * 2, BUTTON_MAPPING[i]);
+        delay(EEPROM_WRITE_DELAY);
+        g_actionButton[i] = BUTTON_MAPPING[i];
+      }
+    }
+  }
+  printResponseMultiple(responseEnabled, 
+            apiEnabled, 
+            true,
+                        0, 
+            "MP,0", 
+            6 , 
+            '\0', 
+            g_actionButton);
+  delay(5);
+}
+
+
+//***GET BUTTON MAPPING API FUNCTION***//
+// Function   : getButtonMapping
+//
+// Description: This function is redefinition of main getButtonMapping function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getButtonMapping(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getButtonMapping(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET BUTTON MAPPING FUNCTION***//
+// Function   : setButtonMapping
+//
+// Description: This function sets a new input button action mapping.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputButtonMapping : int array : The input button action mapping requested.
+//
+// Return     : void
+//*********************************//
+void setButtonMapping(bool responseEnabled, bool apiEnabled, int inputButtonMapping[])
+{
+  bool isValidMapping = true;
+  for (byte i = 0; i < INPUT_ACTION_COUNT; i++)
+  { // Check each action for validity
+    if (inputButtonMapping[i] < 0 || inputButtonMapping[i] > 8) // Up to 7 input actions but 6 available
+    {
+      isValidMapping = false;
+      break;
+    }
+  }
+
+  if (isValidMapping)
+  { //Valid mapping
+  for (byte i = 0; i < INPUT_ACTION_COUNT; i++)
+    {
+      EEPROM.put(EEPROM_buttonMapping1 + i * 2, inputButtonMapping[i]); // Save the mapping into EEPROM if it's a valid mapping
+      delay(EEPROM_WRITE_DELAY);
+      g_actionButton[i] = inputButtonMapping[i];
+    }
+    if (!API_ENABLED)
+    {
+      memcpy(g_actionButton, BUTTON_MAPPING, INPUT_ACTION_COUNT);
+    }
+  }
+  
+  int responseCode = 0;
+  
+  (isValidMapping) ? responseCode = 0 : responseCode = 3;
+  printResponseMultiple(responseEnabled, 
+            apiEnabled, 
+            isValidMapping,
+                        responseCode, 
+            "MP,1", 
+            6, 
+            '\0', 
+            g_actionButton);
+}
+
+
+//***GET ROTATION ANGLE FUNCTION***///
+// Function   : getRotationAngle
+//
+// Description: This function gets the current rotation angle {0,90,180,270}
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//
+// Return     : tempRotationAngle : int : The current rotation angle {0,90,180,270}
+//*********************************//
+int getRotationAngle(bool responseEnabled, bool apiEnabled)
+{
+  int tempRotationAngle = ROTATION_ANGLE;
+
+  if (API_ENABLED)
+  {
+    EEPROM.get(EEPROM_rotationAngle, tempRotationAngle);           // Get the rotation angle from memory
+  }
+  else
+  {
+    tempRotationAngle = ROTATION_ANGLE;
+  }
+  
+  printResponseSingle(responseEnabled, 
+            apiEnabled, 
+            true, 
+            0, 
+            "RA,0", 
+            true, 
+            tempRotationAngle);
+            
+  return tempRotationAngle;
+}
+
+
+//***GET ROTATION ANGLE API FUNCTION***//
+// Function   : getRotationAngle
+//
+// Description: This function is redefinition of main getRotationAngle function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.s
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               optionalArray : int* : The array of int which should contain one element with value of zero.
+//
+// Return     : void
+void getRotationAngle(bool responseEnabled, bool apiEnabled, int* optionalArray)
+{
+  if (optionalArray[0] == 0)
+  {
+    getRotationAngle(responseEnabled, apiEnabled);
+  }
+}
+
+
+//***SET ROTATION ANGLE FUNCTION***///
+// Function   : setRotationAngle
+//
+// Description: This function sets a new rotation angle {0,90,180,270}
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputRotationAngle : int : The input rotation angle {0,90,180,270} requested.
+//
+// Return     : void
+//*********************************//
+void setRotationAngle(bool responseEnabled, bool apiEnabled, int inputRotationAngle)
+{
+  bool isValidRotationAngle = true;
+  if ( inputRotationAngle == 0 
+    || inputRotationAngle == 90
+    || inputRotationAngle == 180
+    || inputRotationAngle == 270)
+  {
+    isValidRotationAngle = true;
+    g_rotationAngle = inputRotationAngle;                     // Update value to global variable
+    EEPROM.put(EEPROM_rotationAngle, g_rotationAngle);        // Update value to memory from serial input
+    delay(EEPROM_WRITE_DELAY);
+    if (!API_ENABLED)
+    {
+      g_rotationAngle = ROTATION_ANGLE; // Use default rotation angle if bad serial input
+    }
+  }
+  else
+  {
+    isValidRotationAngle = false;
+  }
+
+  int responseCode = 0;
+  (isValidRotationAngle) ? responseCode = 0 : responseCode = 3;
+  printResponseSingle(responseEnabled, 
+            apiEnabled, 
+            isValidRotationAngle, 
+            responseCode, 
+            "RA,1", 
+            true, 
+            g_rotationAngle);
+  
+  updateRotationAngle(); // Update rotation transform
+}
+
+
+//***SET ROTATION ANGLE API FUNCTION***//
+// Function   : setRotationAngle
+//
+// Description: This function is redefinition of main setRotationAngle function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               inputRotationAngle : int* : The array of one element which contains the new rotation angle.
+//
+// Return     : void
+void setRotationAngle(bool responseEnabled, bool apiEnabled, int* inputRotationAngle)
+{
+  setRotationAngle(responseEnabled, apiEnabled, inputRotationAngle[0]);
+}
+
+
+//***UPDATE ROTATION ANGLES FUNCTION***///
+// Function   : updateRotationAngle
+//
+// Description: This function updates global rotation angles.
+//
+// Parameters :  void
+//
+// Return     : void
+//***************************//
+void updateRotationAngle(void)
+{ 
+  // Set rotation angle components based on global rotation angle
+  // Currently limited to 4 cadrinal 
+  switch(g_rotationAngle) 
+  {
+    case 90:
+    {
+      g_rotationAngle11 = 0;
+      g_rotationAngle12 = 1;
+      g_rotationAngle21 = 1;
+      g_rotationAngle22 = 0;
+      break;
+    }
+    case 180:
+    {
+      g_rotationAngle11 = -1;
+      g_rotationAngle12 = 0;
+      g_rotationAngle21 = 0;
+      g_rotationAngle22 = -1;
+      break;
+    }
+    case 270:
+    {
+      g_rotationAngle11 = 0;
+      g_rotationAngle12 = -1;
+      g_rotationAngle21 = 1;
+      g_rotationAngle22 = 0;
+      break;
+    }
+    case 0:
+    {
+    }
+    default:
+    {
+      // Default rotation angle
+      g_rotationAngle11 = 1;
+      g_rotationAngle12 = 0;
+      g_rotationAngle21 = 0;
+      g_rotationAngle22 = 1;
+      break;  
+    }
+  } // End switch case
+
+ // More advanced angle calculation - removed to save memory
+  //Convert rotation angle from degrees to radians
+  //float rotationAngleRad = g_rotationAngle * M_PI / 180.0;
+
+  //calculate transform matrix elements.
+  //g_rotationAngle11 = cos(rotationAngleRad);
+  //g_rotationAngle12 = sin(rotationAngleRad);
+  //g_rotationAngle21 = -g_rotationAngle12; // -sin(rotation_angle_rad)
+  //g_rotationAngle22 = g_rotationAngle11; // cos(rotation_angle_rad)
+}
+
+
+//***FACTORY RESET FUNCTION***//
+// Function   : factoryReset
+//
+// Description: This function performs factory reset. It can perform a soft or hard reset.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               resetType : int : The reset type ( 0 = hard reset, 1 = soft reset)
+//
+// Return     : void
+//***************************//
+void factoryReset(bool responseEnabled, bool apiEnabled, int resetType)
+{
+  bool isValidResetType = true;
+  int responseCode = 0;
+  if (resetType == 0 || resetType == 1)
+  { // Reset following settings only if a factory reset is performed
+    isValidResetType = true;
+    responseCode = 0;
+  
+    if (resetType == 0)
+    {
+      // HARD RESET
+      // Resets pressure thresholds and button mapping to default
+      setPuffThreshold(false, true, PUFF_PRESSURE_THRESHOLD_DEFAULT);       // Set default pressure threshold
+      setSipThreshold(false, true, SIP_PRESSURE_THRESHOLD_DEFAULT);         // Set default pressure threshold
+      setButtonMapping(false, true, BUTTON_MAPPING);                        // Set default action mapping
+      setBluetoothConfig(false, true, BT_CONFIG_NUMBER);                    // Set default bluetooth configuration 
+    }
+    setJoystickSensitivity(false, true, SENSITIVITY_COUNTER);               // Set default sensitive counter
+    setRotationAngle(false, true, ROTATION_ANGLE);                          // Set default rotation angle
+    setChangeTolerance(false, true, CHANGE_DEFAULT_TOLERANCE);              // Set default change tolerance
+    setDebugMode(false, true, DEBUG_MODE);                                  // Set default debug mode
+    g_sensitivityCounter = SENSITIVITY_COUNTER;
+    g_changeTolerance = CHANGE_DEFAULT_TOLERANCE;
+    g_debugModeEnabled = DEBUG_MODE;  
+    ledBlink(2, 250, 1);
+  }
+  else
+  {
+    isValidResetType = false;
+    responseCode = 3; //TODO Add comment with what this means
+  }
+
+  printResponseSingle(responseEnabled, 
+            apiEnabled, 
+            isValidResetType, 
+            responseCode, 
+            "FR,1", 
+            true, 
+            resetType);
+}
+
+
+//***FACTORY RESET API FUNCTION***//
+// Function   : factoryReset
+//
+// Description: This function is redefinition of main factoryReset function to match the types of API function arguments.
+//
+// Parameters :  responseEnabled : bool : The response for serial printing is enabled if it's set to true.
+//                                        The serial printing is ignored if it's set to false.
+//               apiEnabled : bool : The API response is sent if it's set to true.
+//                                   Manual response is sent if it's set to false.
+//               resetType : int* : The array of one element which contains the reset type.
+//
+// Return     : void
+void factoryReset(bool responseEnabled, bool apiEnabled, int* resetType)
+{
+  factoryReset(responseEnabled, apiEnabled, resetType[0]);
+}
+
+//***SERIAL SETTINGS FUNCTION TO CHANGE SPEED AND COMMUNICATION MODE USING SOFTWARE***//
+// Function   : serialSettings
+//
+// Description: This function confirms if serial settings should be enabled.
+//              It returns true if it's in the settings mode and is waiting for a command.
+//              It returns false if it's not in the settings mode or it needs to exit the settings mode.
+//
+// Parameters :  enabled : bool : The input flag
+//
+// Return     : bool
+//*************************************************************************************//
+bool serialSettings(bool enabled)
+{
+  String commandString = "";
+  bool settingsFlag = enabled;                    // Settings mode or command mode
+  bool responseSendFlag = false;                  // Send response if true , perform command if false
+  bool responseStatusFlag = false;                // Set status of the response ( SUCCESS = true, FAIL = false )
+
+  // Set the input parameter to the flag returned. This will help to detect that the settings actions should be performed.
+  if (Serial.available() > 0)
+  {
+    // Check if serial has received or read input string and word "SETTINGS" is in input string.
+    commandString = Serial.readString();
+    if (settingsFlag == false && commandString == "SETTINGS")
+    {
+      // SETTING received
+      // Set the return flag to true so settings actions can be performed in the next call to the function
+      settingsFlag = true;
+      responseSendFlag = true;
+      responseStatusFlag = true;
+    }
+    else if (settingsFlag == true && commandString == "EXIT")
+    {
+      // EXIT Recieved
+      // Set the return flag to false so settings actions can be exited
+      settingsFlag = false;
+      responseSendFlag = true;
+      responseStatusFlag = true;
+    }
+    else if (settingsFlag == true && isValidCommandFormat(commandString))
+    { // Check if command's format is correct and it's in settings mode
+      settingsFlag = false;
+      responseSendFlag = false;
+    }
+    else
+    {
+      settingsFlag = false;
+      responseSendFlag = true;
+      responseStatusFlag = false;
+    }
+    // Perform action based on the previous conditional statements
+    (responseSendFlag) ? printResponseSingle(true, true, responseStatusFlag, 0, commandString, false, 0) : performCommand(commandString);  
+    
+    Serial.flush();
+  }
+  return settingsFlag;
+}
+
+//***VALIDATE INPUT COMMAND FORMAT FUNCTION***//
+// Function   : isValidCommandFormat
+//
+// Description: This function confirms command string has correct format.
+//              It returns true if the string has a correct format.
+//              It returns false if the string doesn't have a correct format.
+//
+// Parameters :  inputCommandString : String : The input string
+//
+// Return     : boolean
+//***********************************************//
+
+bool isValidCommandFormat(String inputCommandString)
+{
+  bool isValidFormat = false;
+  int inputLength = inputCommandString.length();
+  if ((inputLength >= (6) && inputLength <= (11)) && inputCommandString.charAt(2) == ',' && inputCommandString.charAt(4) == ':')
+  {
+    isValidFormat = true;
+  }
+
+  return isValidFormat;
+}
+
+//***CHECK IF STRING IS A NUMBER FUNCTION***//
+// Function   : isStrNumber
+//
+// Description: This function checks if the input string is a number.
+//              It returns true if the string includes all numeric characters.
+//              It returns false if the string includes a non numeric character.
+//
+// Parameters :  str : String : The input string
+//
+// Return     : boolean
+//******************************************//
+boolean isStrNumber(String str)
+{
+  for (byte i = 0; i < str.length(); i++)
+  {
+    if (!isDigit(str.charAt(i)))
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+//***CHECK IF CHAR IS A VALID DELIMITER FUNCTION***//
+// Function   : isValidDelimiter
+//
+// Description: This function checks if the input char is a valid delimiter.
+//              It returns true if the character is a valid delimiter.
+//              It returns false if the character is not a valid delimiter.
+//
+// Parameters :  inputDelimiter : char : The input char delimiter
+//
+// Return     : boolean
+//******************************************//
+bool isValidDelimiter(char inputDelimiter)
+{
+  bool validOutput;
+  (inputDelimiter == ',' || inputDelimiter == ':' || inputDelimiter == '-') ? validOutput = true : validOutput = false;
+  return validOutput;
+}
+
+
+//***SERIAL PRINT OUT COMMAND RESPONSE WITH SINGLE PARAMETER FUNCTION***//
+// Function   : printResponseSingle
+//
+// Description: Serial Print output of the responses from APIs with single parameter as the output
+//
+// Parameters :  responseEnabled : bool : Print the response if it's set to true, and skip the response if it's set to false.
+//               apiEnabled : bool : Print the response and indicate if the the function was called via the API if it's set to true.
+//                                   Print Manual response if the function wasn't called via API.
+//               responseStatus : bool : The response status (SUCCESS,FAIL)
+//               responseNumber : int : 0,1,2 (Different meanings depending on the responseStatus)
+//               responseCommand : String : The End-Point command which is returned as output.
+//               responseParameterEnabled : bool : Print the parameter if it's set to true, and skip the parameter if it's set to false.
+//               responseParameter : int : The response parameters printed as output.
+//
+// Return     : void
+//***********************************************************************//
+void printResponseSingle(bool responseEnabled,bool apiEnabled, bool responseStatus, int responseNumber, String responseCommand,bool responseParameterEnabled,int responseParameter) 
+
+{
+  if (responseEnabled)
+  {
+    if (responseStatus)
+    {
+      (apiEnabled) ? Serial.print("SUCCESS") : Serial.print("MANUAL");
+    }
+    else
+    {
+      Serial.print("FAIL");
+    }
+
+    Serial.print(",");
+    Serial.print(responseNumber);
+    Serial.print(":");
+    Serial.print(responseCommand);
+
+    if (responseParameterEnabled)
+    {
+      Serial.print(":");
+      Serial.println(responseParameter);
+    }
+    else
+    {
+      Serial.println("");
+    }
+    delay(SERIAL_DELAY);
+  }
+}
+
+//***SERIAL PRINT OUT COMMAND RESPONSE WITH MULTIPLE PARAMETERS FUNCTION***//
+// Function   : printResponseMultiple
+//
+// Description: Serial Print output of the responses from APIs with multiple parameters
+//
+// Parameters :  responseEnabled : bool : Print the response if it's set to true, and skip the response if it's set to false.
+//               apiEnabled : bool : Print the response and indicate if the the function was called via the API if it's set to true.
+//                                   Print Manual response if the function wasn't called via API.
+//               responseStatus : bool : The response status (SUCCESS,FAIL)
+//               responseNumber : byte : 0,1,2,3 (Different meanings depending on the responseStatus)
+//               responseCommand : String : The End-Point command which is returned as output.
+//               responsePrefix : String : The prefix to be added before the parameter section of the response.
+//               responseParameterSize : byte : The size of the array which holds output response parameters.
+//               responseParameterDelimiter : char array : The delimiter used to separate multiple response parameters.
+//               responseParameter : int array : The response parameters printed as output.
+//
+// Return     : void
+//************************************************************************************//
+void printResponseMultiple(bool responseEnabled, bool apiEnabled, bool responseStatus,
+                           byte responseNumber, String responseCommand,
+                           byte responseParameterSize, char responseParameterDelimiter, int responseParameter[])
+{
+  char tempParameterDelimiter[1];
+
+  (isValidDelimiter(responseParameterDelimiter)) ? tempParameterDelimiter[0] = {responseParameterDelimiter} : tempParameterDelimiter[0] = {'\0'};
+
+  if (responseEnabled)
+  {
+    if (responseStatus)
+    {
+      (apiEnabled) ? Serial.print("SUCCESS") : Serial.print("MANUAL");
+    }
+    else
+    {
+      Serial.print("FAIL");
+    }
+    Serial.print(",");
+    Serial.print(responseNumber);
+    Serial.print(":");
+    Serial.print(responseCommand);
+    Serial.print(":");
+  
+    for (byte parameterIndex = 0; parameterIndex < responseParameterSize; parameterIndex++)
+    {
+      Serial.print(responseParameter[parameterIndex]);
+      if (parameterIndex < (responseParameterSize - 1))
+      {
+        Serial.print(tempParameterDelimiter[0]);
+      }
+    }
+    Serial.println("");
+    delay(SERIAL_DELAY);
+  } // end output response
+}
+
+//***CONTINUOUS SERIAL PRINT OUT COMMAND RESPONSE WITH MULTIPLE PARAMETERS FUNCTION***//
+// Function   : printResponseContinuous
+//
+// Description: Serial Print output of the continuous responses from APIs
+//
+// Parameters :  responseStatus : String : The response to the API call (RAW,LOG)
+//               responseNumber : int : 0,1,2 (Different meanings depending on the responseStatus)
+//               responseParameterSize : int : The size of the array which holds output response parameters
+//               responseParameterDelimiter : char array : The delimiter used to separate multiple response parameters
+//               responseParameter : int array : The response parameters printed as output
+//
+// Return     : void
+//************************************************************************************//
+void printResponseContinuous(String responseStatus, byte responseNumber, byte responseParameterSize,
+                             char responseParameterDelimiter, int responseParameter[])
+{
+  char tempParameterDelimiter[1];
+
+  (isValidDelimiter(responseParameterDelimiter)) ? tempParameterDelimiter[0] = {responseParameterDelimiter} : tempParameterDelimiter[0] = {'\0'};
+
+  Serial.print(responseStatus);
+  Serial.print(",");
+  Serial.print(responseNumber);
+  Serial.print(":");
+  
+  for (byte parameterIndex = 0; parameterIndex < responseParameterSize; parameterIndex++)
+  {
+    Serial.print(responseParameter[parameterIndex]);
+    if (parameterIndex < (responseParameterSize - 1))
+    {
+      Serial.print(tempParameterDelimiter[0]);
+    }
+  }
+  Serial.println("");
+}
+
+//***PERFORM COMMAND FUNCTION TO CHANGE SETTINGS USING SOFTWARE***//
+// Function   : performCommand
+//
+// Description: This function takes processes an input string from the serial and calls the
+//              corresponding API function, or outputs an error.
+//
+// Parameters :  inputString : String : The input command as a string.
+//
+// Return     : void
+//*********************************//
+void performCommand(String inputString)
+{
+  int inputCommandIndex = inputString.indexOf(':');
+
+  // Extract command string from input string
+  String inputCommandString = inputString.substring(0, inputCommandIndex);
+
+  // Extract parameter string from input string
+  String inputParameterString = inputString.substring(inputCommandIndex + 1);
+
+  // Determine total number of API commands
+  byte totalCommandNumber = sizeof(apiFunction) / sizeof(apiFunction[0]);
+
+  // Iterate through each API command
+  for (byte apiIndex = 0; apiIndex < totalCommandNumber; apiIndex++) {
+
+    // Test if input command string matches API command and input parameter string matches API parameter string
+    if ( inputCommandString == apiFunction[apiIndex]._command
+         && ((int)inputParameterString.toInt() == apiFunction[apiIndex]._parameter
+         || apiFunction[apiIndex]._parameter == 1 
+         || apiFunction[apiIndex]._parameter == 2 ))
+    {
+
+      // Matching Command String found
+      if ( isStrNumber( inputParameterString )) // Check if parameter is valid
+      { // Valid Parameter
+        // Handle parameters that are an array as a special case.
+        if (apiFunction[apiIndex]._parameter == 2)  // 2 denotes an array parameter
+        {
+          int inputParameterArray[inputParameterString.length() + 1];
+          for (unsigned int arrayIndex = 0; arrayIndex < inputParameterString.length(); arrayIndex++)
+          {
+            inputParameterArray[arrayIndex] = inputParameterString.charAt(arrayIndex) - '0';
+          }
+          // Call matching API function with input parameter array
+          apiFunction[apiIndex]._function(true, true, inputParameterArray);
+          //delay(5);
+        }
+        else
+        {
+          int tempParameterArray[1] = {(int)inputParameterString.toInt()};
+          // Call matching API function with input parameter string
+          apiFunction[apiIndex]._function(true, true, tempParameterArray);
+          //delay(5);
+        }
+      }
+      else
+      { // Invalid input parameter
+
+        // Output error message
+        printResponseSingle(true, true, false, 2, inputString, false, 0);
+      }
+      break;
+    }
+    else if (apiIndex == (totalCommandNumber - 1))
+    { // Command doesn’t exist - Output error message
+      printResponseSingle(true, true, false, 1, inputString, false, 0);
+      break;
+    }
+  } //end iterate through API functions
+}
+
+//***LED ON FUNCTION***//
+// Function   : ledOn
+//
+// Description: This function is used to turn LEDs on.
+//
+// Parameters : ledNumber : int : The led number (1: Turn green on , 2: Turn red on).
+//
+// Return     : void
+//*********************************//
+void ledOn(int ledNumber)
+{
+  switch (ledNumber)
+  {
+    case 1:
+      { // Turn GREEN LED on
+        digitalWrite(LED_GREEN_PIN, HIGH);
+        //        delay(5);
+        digitalWrite(LED_RED_PIN, LOW);
+        break;
+      }
+    case 2:
+      { // Turn RED LED on
+        digitalWrite(LED_RED_PIN, HIGH);
+        //        delay(5);
+        digitalWrite(LED_GREEN_PIN, LOW);
+        break;
+      }
+  }
+}
+
+//***LED CLEAR FUNCTION***//
+// Function   : ledClear
+//
+// Description: This function is used to turns both LEDs off.
+//
+// Parameters : void
+//
+// Return     : void
+//*********************************//
+void ledClear(void)
+{
+  digitalWrite(LED_GREEN_PIN, LOW);
+  digitalWrite(LED_RED_PIN, LOW);
+}
+
+//***LED BLINK FUNCTION***//
+// Function   : ledBlink
+//
+// Description: This function blinks the LEDs.
+//
+// Parameters : numBlinks : int : The number of LED blinks.
+//              delayBlinks : int : The delay for each LED blink.
+//              ledNumber : int : The led number (1: Flash green, 2: Flash red, 3: Alternate).
+//
+// Return     : void
+//*********************************//
+void ledBlink(int numBlinks, int delayBlinks, int ledNumber)
+{
+  if (numBlinks < 0) numBlinks *= -1; //todo is this error checking?
+
+  switch (ledNumber)
+  {
+    case 1:
+      { // Flash green
+        for (byte i = 0; i < numBlinks; i++)
+        {
+          digitalWrite(LED_GREEN_PIN, HIGH);
+          delay(delayBlinks);
+          digitalWrite(LED_GREEN_PIN, LOW);
+          delay(delayBlinks);
+        }
+        break;
+      }
+    case 2:
+      { // Flash red
+        for (byte i = 0; i < numBlinks; i++)
+        {
+          digitalWrite(LED_RED_PIN, HIGH);
+          delay(delayBlinks);
+          digitalWrite(LED_RED_PIN, LOW);
+          delay(delayBlinks);
+        }
+        break;
+      }
+    case 3:
+      { // Alternate flashing red and green
+        for (byte i = 0; i < numBlinks; i++)
+        {
+          digitalWrite(LED_GREEN_PIN, HIGH);
+          delay(delayBlinks);
+          digitalWrite(LED_GREEN_PIN, LOW);
+          delay(delayBlinks);
+          digitalWrite(LED_RED_PIN, HIGH);
+          delay(delayBlinks);
+          digitalWrite(LED_RED_PIN, LOW);
+          delay(delayBlinks);
+        }
+        break;
+      }
+  }
+}
+
+//***PUSH BUTTON SPEED HANDLER FUNCTION***//
+// Function   : pushButtonHandler 
+// 
+// Description: This function handles the push button actions.
+// 
+// Parameters :  void
+// 
+// Return     : void
+//*********************************//
+void pushButtonHandler() 
+{
+  if (digitalRead(BUTTON_UP_PIN) == LOW)
+  { // Up button pushed
+    delay(250);
+    if (digitalRead(BUTTON_DOWN_PIN) == LOW)
+    { // Up and down button pushed
+      setJoystickCalibration(true, false);                      // Call joystick calibration if both push button up and down are pressed
+    }
+    else
+    { // Just up button pushed
+      increaseJoystickSensitivity(true, false);                      // Call increase sensitivity function if push button up is pressed
+    }
+  }
+
+  if (digitalRead(BUTTON_DOWN_PIN) == LOW)
+  { // Down button pushed
+    delay(250);
+    if (digitalRead(BUTTON_UP_PIN) == LOW)
+    { // Down button and up button pushed
+      setJoystickCalibration(true, false);                           // Call joystick calibration if both push button up and down are pressed
+    }
+    else
+    { // Just down button pushed
+      decreaseJoystickSensitivity(true, false);                      // Call increase sensitivity function if push button up is pressed
+    }
+  }
+}
+
+//***SIP AND PUFF ACTION HANDLER FUNCTION***//
+// Function   : sipAndPuffHandler
+//
+// Description: This function handles the sip and puff actions using input button mapping.
+//
+// Parameters :  void
+//
+// Return     : void
+//*********************************//
+void sipAndPuffHandler(const int mode)
+{
+  // Read pressure sensor for sip and puff functions
+  g_joystickPressure = readPressure();   // [ADC steps]
+
+  // Puff handling: check if the pressure is under puff pressure threshold and measure how long until it is released
+  if (g_joystickPressure < g_puffThreshold)
+  { //Puff detected
+    
+    while (g_joystickPressure < g_puffThreshold) // Continue measuring pressure until puff stops
+    {
+      g_joystickPressure = readPressure();
+      g_puffCount++;                                // Count number of cycles pressure value has been under puff pressure threshold
+      delay(PRESSURE_HANDLER_DELAY);
+    } // end puff measurement
+
+    // USB puff actions
+    if (g_puffCount < PUFF_COUNT_THRESHOLD_MED)
+    {
+      performButtonAction(g_actionButton[0], mode); // Perform Short puff action
+    }
+    else if (g_puffCount >= PUFF_COUNT_THRESHOLD_MED && g_puffCount < PUFF_COUNT_THRESHOLD_LONG)
+    {
+      performButtonAction(g_actionButton[2], mode); // Perform long puff action
+    }
+    else if (g_puffCount >= PUFF_COUNT_THRESHOLD_LONG)
+    {
+      performButtonAction(g_actionButton[4], mode); // Perform very long puff action
+    }
+    g_puffCount = 0;                                //Reset puff counter
+  }
+
+  // Sip handling: check if the pressure is above sip pressure threshold and measure how long until it is released
+  if (g_joystickPressure > g_sipThreshold)
+  {
+    // Sip detected
+    while (g_joystickPressure > g_sipThreshold)
+    { // Continue measuring pressure until sip stops
+      g_joystickPressure = readPressure();
+      g_sipCount++;                                 // Count how long the pressure value has been above sip pressure threshold
+      delay(PRESSURE_HANDLER_DELAY);
+    }
+
+    //USB Sip actions
+    if (g_sipCount < SIP_COUNT_THRESHOLD_MED)
+    {
+      performButtonAction(g_actionButton[1], mode); // Perform short sip action
+    }
+    else if (g_sipCount >= SIP_COUNT_THRESHOLD_MED && g_sipCount < SIP_COUNT_THRESHOLD_LONG)
+    {
+      performButtonAction(g_actionButton[3], mode); // Perform long sip action
+    }
+    else if (g_sipCount >= SIP_COUNT_THRESHOLD_LONG)
+    {
+      //Perform seconday function if sip counter value is more than 750 ( 5 second Long Sip )
+      performButtonAction(g_actionButton[5], mode); // Perform very long sip action
+    }
+    g_sipCount = 0;                                 // Reset sip counter
+  } // end sip handling
+}
+
+////***SIP AND PUFF RAW HANDLER FUNCTION***//
+// Returns the raw pressure value
+// Function   : sipAndPuffRawValue
+//
+// Description: This function outputs the raw pressure value from ADC
+//
+// Parameters :  void
+//
+// Return     : currentAction : int : The return raw pressure value 
+int sipAndPuffRawValue()
+{
+
+  g_joystickPressure = readPressure();  // Measure current pressure
+
+  return g_joystickPressure;
+}
+
+
+
+//***PERFORM BUTTON ACTION FUNCTION**//
+// Function   : performButtonAction
+//
+// Description: This function perform mapped output actions (e.g. Enter Key press) based on input action (e.g. short puff)
+//
+// Parameters : outputAction : byte : The output action number used to map sip and puff inputs.
+//
+// Return     : void
+//*********************************//
+void performButtonAction(byte outputAction, bool modeAction)
+{
+    switch (outputAction)
+    {
+      case OUTPUT_NOTHING:
+        {
+          // Perform no action
+          break;
+        }
+      case OUTPUT_KEY_ENTER:
+        {
+          // Perform Enter key press action
+          (modeAction==0) ? sendKey(byte(0x0A)) : sendBluetoothKey(byte(0x28));
+          delay(5);
+          break;
+        }
+      case OUTPUT_KEY_SPACE:
+        {
+          // Perform Space key press action
+          (modeAction==0) ? sendKey(byte(0x20)) : sendBluetoothKey(byte(0x2C));
+          delay(5);
+          break;
+        }
+      case OUTPUT_KEY_DOT:
+        {
+          // Perform Dot key press action
+          (modeAction==0) ? sendKey(byte(0x2E)) : sendBluetoothKey(byte(0x37));
+          delay(5);
+          break;
+        }
+      case OUTPUT_KEY_DASH:
+        {
+          // Perform Dash key press action
+          (modeAction==0) ? sendKey(byte(0x2D)) : sendBluetoothKey(byte(0x2D));
+          delay(5);
+          break;
+        }
+      case OUTPUT_KEY_F1:
+        {
+          // Perform F1 key press action
+          (modeAction==0) ? sendKey(byte(0xC2)) : sendBluetoothKey(byte(0x3A));
+          delay(5);
+          break;
+        }
+      case OUTPUT_KEY_F2:
+        {
+          // Perform F2 key press action
+          (modeAction==0) ? sendKey(byte(0xC3)) : sendBluetoothKey(byte(0x3B));
+          delay(5);
+          break;
+        }
+      case OUTPUT_JOYSTICK_HOME_RESET:
+        {
+          // Joystick Initialization: Perform joystick manual home initialization to reset default value of FSR's
+          // Default: if puff counter value is more than 750 ( 5 second Long Puff )
+          ledClear();
+          ledBlink(4, 350, 3);
+          setJoystickInitialization(true, false);
+          delay(5);
+          break;
+        }
+      case OUTPUT_JOYSTICK_CALIBRATION:
+        {
+          // Joystick Calibration: Perform joystick Calibration to reset default value of FSR's
+          setJoystickCalibration(true, false);
+          delay(5);
+          break;
+        }
+    }// end switch
 }
